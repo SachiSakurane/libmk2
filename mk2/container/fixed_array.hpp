@@ -7,11 +7,16 @@
 
 #include <iostream>
 #include <memory>
+#include <utility>
+#include <tuple>
 
 #include <mk2/iterator/index_iterator.hpp>
 
 namespace mk2 { 
 namespace container{
+
+    struct tuple_construct_t{};
+    constexpr tuple_construct_t tuple_construct = tuple_construct_t();
 
     template<typename Type, typename Allocator = std::allocator<Type>>
     class fixed_array {
@@ -35,6 +40,9 @@ namespace container{
         explicit fixed_array(size_t size, const Allocator &a = Allocator());
 
         fixed_array(size_t size, const Type &value, const Allocator &a = Allocator());
+
+        template<typename Tuple>
+        fixed_array(size_t size, tuple_construct_t, Tuple&& tuple, const Allocator &a = Allocator());
 
         template<typename InputIter>
         fixed_array(InputIter first, InputIter last, const Allocator &a = Allocator());
@@ -114,6 +122,9 @@ namespace container{
         const size_type size_;
         Allocator allocator_;
         Type *elems_;
+
+        template<typename Tuple, size_t... Indices>
+        fixed_array(size_t size, Tuple&& tuple, const Allocator &a, std::index_sequence<Indices...>);
     };
 
     template<typename Type, typename Allocator>
@@ -133,9 +144,24 @@ namespace container{
     }
 
     template<typename Type, typename Allocator>
+    template<class Tuple>
+    fixed_array<Type, Allocator>::fixed_array(size_t size, tuple_construct_t, Tuple&& tuple, const Allocator &a)
+            : fixed_array(size, std::forward<Tuple>(tuple), a, std::make_index_sequence<std::tuple_size<Tuple>::value>()){
+    }
+
+    template<typename Type, typename Allocator>
+    template<typename Tuple, size_t... Indices>
+    fixed_array<Type, Allocator>::fixed_array(size_t size, Tuple&& tuple, const Allocator &a, std::index_sequence<Indices...>)
+            : size_(size), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_)) {
+        Type *e = elems_;
+        for (size_t i = 0; i < size_; ++i)
+            allocator_traits::construct(allocator_, e++, std::get<Indices>(std::forward<Tuple>(tuple))...);
+    }
+
+    template<typename Type, typename Allocator>
     template<typename InputIter>
     fixed_array<Type, Allocator>::fixed_array(InputIter first, InputIter last, const Allocator &a)
-            : size_(std::distance(first, last)), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_)) {
+            : size_((size_type)std::distance(first, last)), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_)) {
         for (Type *e = elems_; first != last; ++first)
             allocator_traits::construct(allocator_, e++, *first);
     }
