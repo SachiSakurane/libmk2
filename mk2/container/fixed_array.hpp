@@ -59,10 +59,13 @@ namespace container{
 
         ~fixed_array() {
             if (elems_) {
-                allocator_traits::destroy(allocator_, elems_);
-                allocator_traits::deallocate(allocator_, elems_, size_);
+                destroy();
             }
         }
+
+        fixed_array& operator=(const fixed_array& );
+
+        fixed_array& operator=(fixed_array&& );
 
         iterator begin() noexcept { return iterator(*this); }
 
@@ -125,6 +128,12 @@ namespace container{
 
         template<typename Tuple, size_t... Indices>
         fixed_array(size_t size, Tuple&& tuple, const Allocator &a, std::index_sequence<Indices...>);
+
+        void destroy() {
+            allocator_traits::destroy(allocator_, elems_);
+            allocator_traits::deallocate(allocator_, elems_, size_);
+            elems_ = nullptr;
+        }
     };
 
     template<typename Type, typename Allocator>
@@ -188,6 +197,29 @@ namespace container{
     fixed_array<Type, Allocator>::fixed_array(fixed_array &&obj, const Allocator &a)
             : size_(std::move(obj.size_)), allocator_(a), elems_(obj.elems_) {
         obj.elems_ = nullptr;
+    }
+
+    template<typename Type, typename Allocator>
+    fixed_array<Type, Allocator>& fixed_array<Type, Allocator>::operator=(const fixed_array& obj)
+    {
+        destroy();
+        const_cast<size_type&>(this->size_) = obj.size_;
+        this->allocator_ = obj.allocator_;
+        this->elems_ = allocator_traits::allocate(allocator_, size_);
+        Type *e = elems_;
+        for (size_t i = 0; i < size_; ++i)
+            allocator_traits::construct(allocator_, e++, obj[i]);
+        return *this;
+    }
+
+    template<typename Type, typename Allocator>
+    fixed_array<Type, Allocator>& fixed_array<Type, Allocator>::operator=(fixed_array&& obj)
+    {
+        const_cast<size_type&>(this->size_) = std::move(obj.size_);
+        this->allocator_ = std::move(obj.allocator_);
+        this->elems_ = obj.elems_;
+        obj.elems_ = nullptr;
+        return *this;
     }
 
     template<typename Type, typename Allocator>
