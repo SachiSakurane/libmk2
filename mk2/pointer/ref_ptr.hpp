@@ -19,10 +19,10 @@ namespace pointer{
         ref_ptr() : elem_(nullptr)
         {}
 
-        ref_ptr(pointer ptr) : elem_(ptr)
+        explicit ref_ptr(pointer ptr) : elem_(ptr)
         {}
 
-        ref_ptr(std::unique_ptr<Type> &ptr) : elem_(ptr.get())
+        explicit ref_ptr(const std::unique_ptr<Type> &ptr) : elem_(ptr.get())
         {}
 
         pointer get() const
@@ -40,7 +40,7 @@ namespace pointer{
             return *elem_;
         }
 
-        operator bool()
+        explicit operator bool() const
         {
             return elem_ != nullptr;
         }
