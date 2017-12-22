@@ -29,7 +29,7 @@ namespace container{
         typedef value_type &reference;
         typedef const value_type &const_reference;
         typedef mk2::iterator::index_iterator<array> iterator;
-        typedef const mk2::iterator::index_iterator<array> const_iterator;
+        typedef mk2::iterator::index_iterator<const array> const_iterator;
         typedef value_type *pointer;
         typedef const value_type *const_pointer;
         typedef std::size_t size_type;
@@ -67,9 +67,9 @@ namespace container{
 
         fixed_array& operator=(fixed_array&& );
 
-        iterator begin() noexcept { return iterator(*this); }
+        iterator begin() noexcept { return iterator(*this, 0); }
 
-        const_iterator begin() const noexcept { return const_iterator(*this); }
+        const_iterator begin() const noexcept { return const_iterator(*this, 0); }
 
         iterator end() noexcept { return iterator(*this, size_); }
 

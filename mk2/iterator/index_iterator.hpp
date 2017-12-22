@@ -23,11 +23,11 @@ namespace iterator{
         using reference         = typename Container::reference;
         using const_reference   = typename Container::const_reference;
 
-        constexpr index_iterator(const Container &c, std::size_t index = 0u) : container_(c), index_(index){}
+        constexpr index_iterator(Container &c, std::size_t index = 0u) : container_(c), index_(index){}
 
         constexpr auto operator *() -> decltype(auto)
         {
-            return static_cast<Container>(container_)[index_];
+            return container_[index_];
         }
 
         constexpr auto operator *() const -> decltype(auto)
@@ -37,7 +37,7 @@ namespace iterator{
 
         constexpr auto operator ->() -> decltype(auto)
         {
-            return &static_cast<Container>(container_)[index_];
+            return &container_[index_];
         }
 
         constexpr auto operator ->() const -> decltype(auto)
@@ -47,7 +47,7 @@ namespace iterator{
 
         constexpr auto operator[](difference_type rhv) -> decltype(auto)
         {
-            return static_cast<Container>(container_)[index_ + rhv];
+            return container_[index_ + rhv];
         }
 
         constexpr auto operator[](difference_type rhv) const -> decltype(auto)
@@ -127,7 +127,7 @@ namespace iterator{
         friend constexpr void swap(index_iterator<Item>&, index_iterator<Item>&);
 
     private:
-        const Container& container_;
+        Container& container_;
         difference_type index_;
     };
 
