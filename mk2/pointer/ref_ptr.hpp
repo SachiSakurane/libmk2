@@ -19,11 +19,52 @@ namespace pointer{
         ref_ptr() : elem_(nullptr)
         {}
 
-        explicit ref_ptr(pointer ptr) : elem_(ptr)
+        template<typename Type2>
+        ref_ptr(const ref_ptr<Type2>& obj) : elem_(obj.elem_)
         {}
 
-        explicit ref_ptr(const std::unique_ptr<Type> &ptr) : elem_(ptr.get())
+        template<typename Type2>
+        ref_ptr(ref_ptr<Type2>&& obj) : elem_(obj.elem_)
+        {
+            obj.elem_ = nullptr;
+        }
+
+        template<typename Type2>
+        explicit ref_ptr(Type2* ptr) : elem_(ptr)
         {}
+
+        template<typename Type2>
+        explicit ref_ptr(const std::unique_ptr<Type2>& ptr) : elem_(ptr.get())
+        {}
+
+        template<typename Type2>
+        ref_ptr& operator=(const ref_ptr<Type2>& ptr)
+        {
+            this->elem_ = ptr.elem_;
+            return *this;
+        }
+
+        template<typename Type2>
+        ref_ptr& operator=(ref_ptr<Type2>&& ptr)
+        {
+            this->elem_ = ptr.elem_;
+            ptr.elem_ = nullptr;
+            return *this;
+        }
+
+        template<typename Type2>
+        ref_ptr& operator=(Type2* ptr)
+        {
+            this->elem_ = ptr;
+            return *this;
+        }
+
+        template<typename Type2>
+        ref_ptr& operator=(const std::unique_ptr<Type2>& ptr)
+        {
+            this->elem_ = ptr.get();
+            return *this;
+        }
 
         pointer get() const
         {
@@ -58,6 +99,54 @@ namespace pointer{
     private:
         Type *elem_;
     };
+
+    template<class T, class U>
+    bool operator==(const ref_ptr<T>& lhv, const U& rhv)
+    {
+        return lhv.get() == rhv.get();
+    }
+
+    template<class T, class U>
+    bool operator==(const T& lhv, const ref_ptr<U>& rhv)
+    {
+        return lhv.get() == rhv.get();
+    }
+
+    template<class T, class U>
+    bool operator==(const ref_ptr<T>& lhv, const U* rhv)
+    {
+        return lhv.get() == rhv;
+    }
+
+    template<class T, class U>
+    bool operator==(const T* lhv, const ref_ptr<U>& rhv)
+    {
+        return lhv == rhv.get();
+    }
+
+    template<class T, class U>
+    bool operator!=(const ref_ptr<T>& lhv, const U& rhv)
+    {
+        return !(lhv == rhv);
+    }
+
+    template<class T, class U>
+    bool operator!=(const T& lhv, const ref_ptr<U>& rhv)
+    {
+        return !(lhv == rhv);
+    }
+
+    template<class T, class U>
+    bool operator!=(const ref_ptr<T>& lhv, const U* rhv)
+    {
+        return !(lhv == rhv);
+    }
+
+    template<class T, class U>
+    bool operator!=(const T* lhv, const ref_ptr<U>& rhv)
+    {
+        return !(lhv == rhv);
+    }
 }
 }
 
