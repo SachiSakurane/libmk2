@@ -8,6 +8,7 @@
 #include <thread>
 #include <functional>
 
+#include <mk2/utility/apply.hpp>
 #include <mk2/utility/noncopyable.hpp>
 
 //safe_threadの方がいいかも
@@ -24,7 +25,14 @@ namespace thread{
         {}
         
         //finalizer込みのコンストラクタ
-        
+        template<
+                class ThreadFunc, class ThreadTupleArgs,
+                class FinalizeFunc, class FinalizeTupleArgs
+        >
+        scoped_thread(ThreadFunc&& thread_func, ThreadTupleArgs&& thread_tuple,
+                    FinalizeFunc&& finalize_func, FinalizeTupleArgs&& finalize_tuple)
+        {}
+
         scoped_thread(scoped_thread&& obj) noexcept :
             thread_{ std::move(obj.thread_) },
             finalizer_{ std::move(obj.finalizer_) }
@@ -48,9 +56,9 @@ namespace thread{
             if (thread_.joinable())
                 thread_.join();
         }
-        
-        decltype(thread_)& get_thread() { return thread_; }
-        decltype(finalizer_)& get_finalizer() { return finalizer_; }
+
+        std::thread& get_thread() { return thread_; }
+        std::function<void()>& get_finalizer() { return finalizer_; }
 
     private:
         std::thread thread_;
