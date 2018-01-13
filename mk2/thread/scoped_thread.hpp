@@ -75,10 +75,21 @@ namespace thread{
         
         ~scoped_thread()
         {
+            join();
+        }
+        
+        void join()
+        {
             if (finalizer_) 
                 finalizer_();
             if (thread_.joinable())
                 thread_.join();
+        }
+        
+        void detach()
+        {
+            if (thread_.joinable())
+                thread_.detach();
         }
 
         std::thread& get_thread() { return thread_; }
