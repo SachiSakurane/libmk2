@@ -13,22 +13,22 @@
 
 namespace mk2 {
 namespace thread{
-    template<class Thread = std::thread>
-    class scoped_thread : mk2::utility::noncopyable<scoped_thread>
+    template<class Thread>
+    class basic_scoped_thread : mk2::utility::noncopyable<basic_scoped_thread<Thread>>
     {
     public:
-        scoped_thread()
+        basic_scoped_thread()
         {}
         
         template<class F, class... Args>
-        scoped_thread(F&& f, Args&&... args) : thread_(std::forward<F>(f), std::forward<Args>(args)...)
+        basic_scoped_thread(F&& f, Args&&... args) : thread_(std::forward<F>(f), std::forward<Args>(args)...)
         {}
 
-        scoped_thread(scoped_thread&& obj) noexcept 
+        basic_scoped_thread(basic_scoped_thread&& obj) noexcept
             : thread_{ std::move(obj.thread_) }
         {}
 
-        scoped_thread& operator=(scoped_thread&& rhv) noexcept
+        basic_scoped_thread& operator=(basic_scoped_thread&& rhv) noexcept
         {
             if (thread_.joinable())
                 thread_.join();
@@ -36,7 +36,7 @@ namespace thread{
             return *this;
         }
         
-        ~scoped_thread()
+        ~basic_scoped_thread()
         {
             join();
         }
@@ -58,6 +58,8 @@ namespace thread{
     private:
         Thread thread_;
     };
+
+    using scoped_thread = mk2::thread::basic_scoped_thread<std::thread>;
 }
 }
 
