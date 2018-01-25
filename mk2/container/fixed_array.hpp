@@ -222,14 +222,6 @@ namespace container{
         return *this;
     }
 
-    template<typename Type, typename Allocator>
-    std::ostream &operator<<(std::ostream &ost, const fixed_array<Type, Allocator> &c) {
-        for (auto &&item : c) {
-            ost << item << ",";
-        }
-        return ost;
-    }
-
 }
 }
 #endif //LIBMK2_FIXED_ARRAY_HPP
