@@ -57,10 +57,10 @@ namespace container{
 
         fixed_array(fixed_array &&, const Allocator &a);
 
-        ~fixed_array() {
-            if (elems_) {
+        ~fixed_array()
+        {
+            if (elems_)
                 destroy();
-            }
         }
 
         fixed_array& operator=(const fixed_array& );
@@ -101,11 +101,13 @@ namespace container{
 
         const_reference operator[](size_t n) const noexcept { return elems_[n]; }
 
-        reference at(size_t n) noexcept {
+        reference at(size_t n) noexcept
+        {
             return n < size_ ? elems_[n] : throw std::out_of_range("array::at");
         }
 
-        const_reference at(size_t n) const noexcept {
+        const_reference at(size_t n) const noexcept
+        {
             return n < size_ ? elems_[n] : throw std::out_of_range("array::at");
         }
 
@@ -129,7 +131,8 @@ namespace container{
         template<typename Tuple, size_t... Indices>
         fixed_array(size_t size, Tuple&& tuple, const Allocator &a, std::index_sequence<Indices...>);
 
-        void destroy() {
+        void destroy()
+        {
             allocator_traits::destroy(allocator_, elems_);
             allocator_traits::deallocate(allocator_, elems_, size_);
             elems_ = nullptr;
@@ -138,7 +141,8 @@ namespace container{
 
     template<typename Type, typename Allocator>
     fixed_array<Type, Allocator>::fixed_array(size_t size, const Allocator &a)
-            : size_(size), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_)) {
+            : size_(size), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_))
+    {
         Type *e = elems_;
         for (int i = 0; i < size_; ++i)
             allocator_traits::construct(allocator_, e++, Type());
@@ -146,7 +150,8 @@ namespace container{
 
     template<typename Type, typename Allocator>
     fixed_array<Type, Allocator>::fixed_array(size_t size, const Type &value, const Allocator &a)
-            : size_(size), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_)) {
+            : size_(size), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_))
+    {
         Type *e = elems_;
         for (size_t i = 0; i < size_; ++i)
             allocator_traits::construct(allocator_, e++, value);
@@ -155,13 +160,14 @@ namespace container{
     template<typename Type, typename Allocator>
     template<class Tuple>
     fixed_array<Type, Allocator>::fixed_array(size_t size, tuple_construct_t, Tuple&& tuple, const Allocator &a)
-            : fixed_array(size, std::forward<Tuple>(tuple), a, std::make_index_sequence<std::tuple_size<Tuple>::value>()){
-    }
+            : fixed_array(size, std::forward<Tuple>(tuple), a, std::make_index_sequence<std::tuple_size<Tuple>::value>())
+    {}
 
     template<typename Type, typename Allocator>
     template<typename Tuple, size_t... Indices>
     fixed_array<Type, Allocator>::fixed_array(size_t size, Tuple&& tuple, const Allocator &a, std::index_sequence<Indices...>)
-            : size_(size), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_)) {
+            : size_(size), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_))
+    {
         Type *e = elems_;
         for (size_t i = 0; i < size_; ++i)
             allocator_traits::construct(allocator_, e++, std::get<Indices>(std::forward<Tuple>(tuple))...);
@@ -170,7 +176,10 @@ namespace container{
     template<typename Type, typename Allocator>
     template<typename InputIter>
     fixed_array<Type, Allocator>::fixed_array(InputIter first, InputIter last, const Allocator &a)
-            : size_((size_type)std::distance(first, last)), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_)) {
+            : size_((size_type)std::distance(first, last)),
+              allocator_(a),
+              elems_(allocator_traits::allocate(allocator_, size_))
+    {
         for (Type *e = elems_; first != last; ++first)
             allocator_traits::construct(allocator_, e++, *first);
     }
@@ -185,7 +194,8 @@ namespace container{
 
     template<typename Type, typename Allocator>
     fixed_array<Type, Allocator>::fixed_array(fixed_array &&obj) noexcept
-            : size_(std::move(obj.size_)), allocator_(std::move(obj.allocator_)), elems_(obj.elems_) {
+            : size_(std::move(obj.size_)), allocator_(std::move(obj.allocator_)), elems_(obj.elems_)
+    {
         obj.elems_ = nullptr;
     }
 
@@ -195,7 +205,8 @@ namespace container{
 
     template<typename Type, typename Allocator>
     fixed_array<Type, Allocator>::fixed_array(fixed_array &&obj, const Allocator &a)
-            : size_(std::move(obj.size_)), allocator_(a), elems_(obj.elems_) {
+            : size_(std::move(obj.size_)), allocator_(a), elems_(obj.elems_)
+    {
         obj.elems_ = nullptr;
     }
 
