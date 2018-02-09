@@ -5,6 +5,8 @@
 #ifndef LIBMK2_ITERATOR_DATA_HPP
 #define LIBMK2_ITERATOR_DATA_HPP
 
+#include <initializer_list>
+
 namespace mk2{
 namespace iterator{
     template<class Container>
@@ -26,7 +28,7 @@ namespace iterator{
     }
     
     template <class E>
-    constexpr const E* data(initializer_list<E> il) noexcept
+    constexpr const E* data(std::initializer_list<E> il) noexcept
     {
         return il.begin();
     }
