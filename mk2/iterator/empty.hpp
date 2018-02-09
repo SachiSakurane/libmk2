@@ -5,6 +5,8 @@
 #ifndef LIBMK2_ITERATOR_EMPTY_HPP
 #define LIBMK2_ITERATOR_EMPTY_HPP
 
+#include <initializer_list>
+
 namespace mk2{
 namespace iterator{
     template<class Container>
@@ -20,7 +22,7 @@ namespace iterator{
     }
     
     template <class E>
-    constexpr bool empty(initializer_list<E> il) noexcept
+    constexpr bool empty(std::initializer_list<E> il) noexcept
     {
         return il.size() == 0;
     }
