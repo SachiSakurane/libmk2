@@ -49,13 +49,13 @@ namespace utility {
         template<class Tuple>
         auto operator ()(Tuple&& t)
         {
-            return mk2::utility::apply(std::forward<F>(f_), std::forward<Tuple>(t));
+            return mk2::utility::apply(f_, std::forward<Tuple>(t));
         }
 
         template<class Tuple>
         auto operator ()(const Tuple& t)
         {
-            return mk2::utility::apply(std::forward<F>(f_), t);
+            return mk2::utility::apply(f_, t);
         }
 
     private:
