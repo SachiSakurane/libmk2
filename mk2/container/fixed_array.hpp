@@ -47,7 +47,7 @@ namespace container{
         template<typename InputIter>
         fixed_array(InputIter first, InputIter last, const Allocator &a = Allocator());
 
-        fixed_array(std::initializer_list<Type> il, const Allocator &a = Allocator());
+        explicit fixed_array(std::initializer_list<Type> il, const Allocator &a = Allocator());
 
         fixed_array(const fixed_array &);
 
