@@ -103,12 +103,12 @@ namespace container{
 
         reference at(size_t n) noexcept
         {
-            return n < size_ ? elems_[n] : throw std::out_of_range("array::at");
+            return n < size_ ? elems_[n] : throw std::out_of_range("fixed_array::at");
         }
 
         const_reference at(size_t n) const noexcept
         {
-            return n < size_ ? elems_[n] : throw std::out_of_range("array::at");
+            return n < size_ ? elems_[n] : throw std::out_of_range("fixed_array::at");
         }
 
         reference front() noexcept { return elems_[0]; }
