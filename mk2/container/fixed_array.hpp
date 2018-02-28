@@ -5,10 +5,12 @@
 #ifndef LIBMK2_CONTAINER_FIXED_ARRAY_HPP
 #define LIBMK2_CONTAINER_FIXED_ARRAY_HPP
 
-#include <iostream>
+#include <algorithm>
+#include <iterator>
 #include <memory>
 #include <utility>
 #include <tuple>
+#include <type_traits>
 
 #include <mk2/iterator/index_iterator.hpp>
 
@@ -101,12 +103,12 @@ namespace container{
 
         const_reference operator[](size_t n) const noexcept { return elems_[n]; }
 
-        reference at(size_t n) noexcept
+        reference at(size_t n)
         {
             return n < size_ ? elems_[n] : throw std::out_of_range("fixed_array::at");
         }
 
-        const_reference at(size_t n) const noexcept
+        const_reference at(size_t n) const
         {
             return n < size_ ? elems_[n] : throw std::out_of_range("fixed_array::at");
         }
@@ -122,6 +124,13 @@ namespace container{
         value_type *data() noexcept { return elems_; }
 
         value_type *data() const noexcept { return elems_; }
+
+        void swap(fixed_array& obj)
+        {
+            fixed_array tmp(std::move(obj));
+            obj   = std::move(*this);
+            *this = std::move(tmp);
+        }
 
     private:
         const size_type size_;
@@ -211,8 +220,9 @@ namespace container{
     }
 
     template<typename Type, typename Allocator>
-    fixed_array<Type, Allocator>& fixed_array<Type, Allocator>::operator=(const fixed_array& obj)
+    fixed_array<Type, Allocator>& fixed_array<Type, Allocator>::operator=(const fixed_array& obj) 
     {
+    /*
         destroy();
         const_cast<size_type&>(this->size_) = obj.size_;
         this->allocator_ = obj.allocator_;
@@ -221,6 +231,8 @@ namespace container{
         for (size_t i = 0; i < size_; ++i)
             allocator_traits::construct(allocator_, e++, obj[i]);
         return *this;
+    */
+        return *this = fixed_array<Type, Allocator>(obj);
     }
 
     template<typename Type, typename Allocator>
@@ -233,6 +245,23 @@ namespace container{
         return *this;
     }
 
+    template <class Type, class Allocator>
+    bool operator==(const fixed_array<Type, Allocator>& rhv, const fixed_array<Type, Allocator>& lhv) noexcept
+    {
+        return std::equal(std::begin(rhv), std::begin(lhv), std::end(rhv), std::end(lhv));
+    }
+    
+    template <class Type, class Allocator>
+    bool operator!=(const fixed_array<Type, Allocator>& rhv, const fixed_array<Type, Allocator>& lhv) noexcept
+    {
+        return !(rhv == lhv);
+    }
+    
+    template <class Type, class Allocator>
+    void swap(fixed_array<Type, Allocator>& a, fixed_array<Type, Allocator>& b)
+    {
+        a.swap(b);
+    }
 }
 }
 #endif //LIBMK2_FIXED_ARRAY_HPP
