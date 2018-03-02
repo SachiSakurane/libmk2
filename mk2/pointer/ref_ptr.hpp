@@ -5,6 +5,8 @@
 #ifndef LIBMK2_REF_PTR_HPP
 #define LIBMK2_REF_PTR_HPP
 
+#include <memory>
+
 namespace mk2 {
 namespace pointer{
 
@@ -151,9 +153,9 @@ namespace pointer{
     }
     
     template<class SmartPointer>
-    ref_ptr<typename SmartPointer::element_type> make_ref_ptr(const SmartPointer& p)
+    ref_ptr<typename std::pointer_traits<SmartPointer>::element_type> make_ref_ptr(const SmartPointer& p)
     {
-        return ref_ptr<typename SmartPointer::element_type>(p.get());
+        return ref_ptr<typename std::pointer_traits<SmartPointer>::element_type>(p.get());
     }
 }
 }
