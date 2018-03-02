@@ -15,13 +15,12 @@ namespace pointer{
     public:
         typedef Type* pointer;
         typedef Type& reference;
+        typedef Type element_type;
 
-        ref_ptr() : elem_(nullptr)
-        {}
+        ref_ptr() : elem_(nullptr) {}
 
         template<typename Type2>
-        ref_ptr(const ref_ptr<Type2>& obj) : elem_(obj.elem_)
-        {}
+        ref_ptr(const ref_ptr<Type2>& obj) : elem_(obj.elem_) {}
 
         template<typename Type2>
         ref_ptr(ref_ptr<Type2>&& obj) : elem_(obj.elem_)
@@ -30,12 +29,10 @@ namespace pointer{
         }
 
         template<typename Type2>
-        explicit ref_ptr(Type2* ptr) : elem_(ptr)
-        {}
+        explicit ref_ptr(Type2* ptr) : elem_(ptr) {}
 
-        template<typename Type2>
-        explicit ref_ptr(const std::unique_ptr<Type2>& ptr) : elem_(ptr.get())
-        {}
+        template<typename SmartPointer>
+        explicit ref_ptr(const SmartPointer& ptr) : elem_(ptr.get()) {}
 
         template<typename Type2>
         ref_ptr& operator=(const ref_ptr<Type2>& ptr)
@@ -59,8 +56,8 @@ namespace pointer{
             return *this;
         }
 
-        template<typename Type2>
-        ref_ptr& operator=(const std::unique_ptr<Type2>& ptr)
+        template<typename SmartPointer>
+        ref_ptr& operator=(const SmartPointer& ptr)
         {
             this->elem_ = ptr.get();
             return *this;
@@ -146,6 +143,18 @@ namespace pointer{
     bool operator!=(const T* lhv, const ref_ptr<U>& rhv)
     {
         return !(lhv == rhv);
+    }
+    
+    template<class Type>
+    ref_ptr<Type> make_ref_ptr(Type* p)
+    {
+        return ref_ptr<Type>(p);
+    }
+    
+    template<class SmartPointer>
+    ref_ptr<typename SmartPointer::element_type> make_ref_ptr(const SmartPointer& p)
+    {
+        return ref_ptr<typename SmartPointer::element_type>(p.get());
     }
 }
 }
