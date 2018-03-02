@@ -5,10 +5,9 @@
 #ifndef LIBMK2_REF_PTR_HPP
 #define LIBMK2_REF_PTR_HPP
 
-#include <memory>
-
 namespace mk2 {
 namespace pointer{
+
     template<typename Type>
     class ref_ptr
     {
