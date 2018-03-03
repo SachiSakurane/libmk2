@@ -132,67 +132,67 @@ namespace iterator{
     };
 
     template<class Item>
-    inline constexpr index_iterator<Item> operator+(const index_iterator<Item>& lhv, typename Item::difference_type rhv)
+    constexpr index_iterator<Item> operator+(const index_iterator<Item>& lhv, typename Item::difference_type rhv)
     {
         return index_iterator<Item>(lhv.container_, lhv.index_ + rhv);
     }
 
     template<class Item>
-    inline constexpr index_iterator<Item> operator+(typename Item::difference_type lhv, const index_iterator<Item>& rhv)
+    constexpr index_iterator<Item> operator+(typename Item::difference_type lhv, const index_iterator<Item>& rhv)
     {
         return index_iterator<Item>(rhv.container_, lhv + rhv.index_);
     }
 
     template<class Item>
-    inline constexpr index_iterator<Item> operator-(const index_iterator<Item>& lhv, typename Item::difference_type rhv)
+    constexpr index_iterator<Item> operator-(const index_iterator<Item>& lhv, typename Item::difference_type rhv)
     {
         return index_iterator<Item>(lhv.container_, lhv.index_ - rhv);
     }
 
     template<class Item>
-    inline constexpr typename Item::difference_type operator-(const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
+    constexpr typename Item::difference_type operator-(const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
     {
         return lhv.index_ - rhv.index_;
     }
 
     template<class Item>
-    inline constexpr bool operator==(const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
+    constexpr bool operator==(const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
     {
         return &lhv.container_ == &rhv.container_ && lhv.index_ == rhv.index_;
     }
 
     template<class Item>
-    inline constexpr bool operator!=(const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
+    constexpr bool operator!=(const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
     {
         return &lhv.container_ != &rhv.container_ || lhv.index_ != rhv.index_;
     }
 
     template<class Item>
-    inline constexpr bool operator< (const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
+    constexpr bool operator< (const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
     {
         return lhv.index_ < rhv.index_;
     }
 
     template<class Item>
-    inline constexpr bool operator<=(const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
+    constexpr bool operator<=(const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
     {
         return lhv.index_ <= rhv.index_;
     }
 
     template<class Item>
-    inline constexpr bool operator> (const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
+    constexpr bool operator> (const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
     {
         return lhv.index_ > rhv.index_;
     }
 
     template<class Item>
-    inline constexpr bool operator>=(const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
+    constexpr bool operator>=(const index_iterator<Item>& lhv, const index_iterator<Item>& rhv)
     {
         return lhv.index_ >= rhv.index_;
     }
 
     template<class Item>
-    inline constexpr void swap(index_iterator<Item>& lhv, index_iterator<Item>& rhv)
+    constexpr void swap(index_iterator<Item>& lhv, index_iterator<Item>& rhv)
     {
         index_iterator<Item> temp = lhv;
         lhv = rhv;
