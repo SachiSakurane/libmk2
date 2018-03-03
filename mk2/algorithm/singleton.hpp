@@ -23,9 +23,9 @@ namespace algorithm{
     private:
         typedef std::unique_ptr<_T> singleton_pointer_type;
         
-        inline static _T *create_instance(){return new _T();}
+        static _T *create_instance(){return new _T();}
         
-        inline static _T &get_reference(const singleton_pointer_type &ptr){return *ptr;}
+        static _T &get_reference(const singleton_pointer_type &ptr){return *ptr;}
         
     protected:
         singleton(){}
