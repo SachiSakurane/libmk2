@@ -16,6 +16,8 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/range/iterator_range.hpp>
 
+//TODO:相対パス
+
 namespace mk2 {
 namespace filesystem {
 
@@ -79,19 +81,26 @@ namespace filesystem {
 
             if(mk2::filesystem::detail::find_glob_char(*bread_crumbs_iter))
             {
-                auto filter = std::regex(mk2::filesystem::detail::glob_to_regex(*bread_crumbs_iter));
+                auto next_path = path + mk2::string::stot<Char>("/", L"/") + *bread_crumbs_iter;
+                auto filter = std::regex(mk2::filesystem::detail::glob_to_regex(next_path));
 
                 //glob表現が見つかった場合、派生で捜査する
                 //nextがendならresultに突っ込む
-                for (auto &&candidacy : boost::make_iterator_range(using_fs::directory_iterator(path),
-                                                                   using_fs::directory_iterator()))
+                for (auto &&candidacy : boost::make_iterator_range(mk2::filesystem::using_fs::directory_iterator(path),
+                                                                   mk2::filesystem::using_fs::directory_iterator()))
                 {
-                    if(std::regex_match(mk2::filesystem::get_string(candidacy.path()), filter))
+                    auto candidacy_path = mk2::filesystem::get_string<Char>(candidacy.path());
+
+                    if(std::regex_match(candidacy_path, filter))
                     {
-                        glob_impl_1(next,
-                                    bread_crumbs_iter_end,
-                                    path + mk2::string::stot<Char>("/", L"/") + *bread_crumbs_iter,
-                                    result);
+                        if(next != bread_crumbs_iter_end)
+                        {
+                            glob_impl_1(next, bread_crumbs_iter_end, next_path, result);
+                        }
+                        else
+                        {
+                            result.emplace_back(candidacy_path);
+                        }
                     }
                 }
             }
@@ -99,18 +108,15 @@ namespace filesystem {
             if(next != bread_crumbs_iter_end)
             {
                 auto next_path = path + mk2::string::stot<Char>("/", L"/") + *bread_crumbs_iter;
-                if(using_fs::exists(next_path))
+                if(mk2::filesystem::using_fs::exists(next_path))
                 {
-                    glob_impl_1(next,
-                                bread_crumbs_iter_end,
-                                next_path,
-                                result);
+                    glob_impl_1(next, bread_crumbs_iter_end, next_path, result);
                 }
             }
             else
             {
                 auto next_path = path + *bread_crumbs_iter;
-                if(using_fs::exists(next_path))
+                if(mk2::filesystem::using_fs::exists(next_path))
                     result.emplace_back(next_path);
             }
         }
@@ -136,7 +142,14 @@ namespace filesystem {
     template<class Char>
     std::vector<std::basic_string<Char>> glob(const std::basic_string<Char>& path, bool is_recursive = false)
     {
-        return mk2::filesystem::detail::glob_impl(path);
+        auto absolute_path = path;
+        if(!mk2::filesystem::is_absolute(path))
+        {
+            auto current_path = mk2::filesystem::using_fs::current_path();
+            
+        }
+
+        return mk2::filesystem::detail::glob_impl(absolute_path);
     }
 
 }
