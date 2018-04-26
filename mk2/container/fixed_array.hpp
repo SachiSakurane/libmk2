@@ -11,6 +11,7 @@
 #include <utility>
 #include <tuple>
 #include <type_traits>
+#include <stdexcept>
 
 #include <mk2/iterator/index_iterator.hpp>
 

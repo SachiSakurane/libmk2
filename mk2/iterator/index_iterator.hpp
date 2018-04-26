@@ -12,7 +12,7 @@ namespace mk2{
 namespace iterator{
 
     template<class Container>
-    class index_iterator : public std::random_access_iterator_tag
+    class index_iterator
     {
     public:
         using iterator_category = std::random_access_iterator_tag;
