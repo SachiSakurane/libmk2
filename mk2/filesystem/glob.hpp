@@ -12,6 +12,7 @@
 
 #include <mk2/filesystem/config.hpp>
 #include <mk2/filesystem/path.hpp>
+#include <mk2/iterator/select_iterator.hpp.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/range/iterator_range.hpp>
@@ -126,7 +127,7 @@ namespace filesystem {
         {
             std::vector<std::basic_string<Char>> result;
 
-            std::vector<std::string> bread_crumbs;
+            std::vector<std::basic_string<Char>> bread_crumbs;
             boost::split(bread_crumbs, path, boost::is_any_of(mk2::string::stot<Char>("/", L"/")));
 
             if(!bread_crumbs.empty())
@@ -138,7 +139,7 @@ namespace filesystem {
         }
     }
 
-    // なぜpathではなくstringかというと、もしglob文字が入っていた場合pathだと文字として検索してしまうため
+    // glob文字が入っていた場合pathだと文字として検索してしまうため、pathではなくstringを用いる
     template<class Char>
     std::vector<std::basic_string<Char>> glob(const std::basic_string<Char>& path, bool is_recursive = false)
     {
@@ -146,7 +147,37 @@ namespace filesystem {
         if(!mk2::filesystem::is_absolute(path))
         {
             auto current_path = mk2::filesystem::using_fs::current_path();
-            
+            auto transform = [](const using_fs::path& path) { return mk2::filesystem::get_string(path); };
+
+            namespace mk2iter = mk2::iterator;
+            auto current_crumbs = std::vector<std::basic_string<Char>>{
+                mk2iter::make_value_transform_iterator(std::begin(current_path), transform),
+                std::end(current_path)
+            };
+
+            std::vector<std::basic_string<Char>> bread_crumbs;
+            boost::split(bread_crumbs, path, boost::is_any_of(mk2::string::stot<Char>("/", L"/")));
+
+            for (auto &&item : bread_crumbs)
+            {
+                if(item == mk2::string::stot<Char>(".", L"."))
+                {
+                }
+                else if(item == mk2::string::stot<Char>("..", L".."))
+                {
+                    current_crumbs.erase(--std::end(current_crumbs));
+                }
+                else
+                {
+                    current_crumbs.emplace_back(item);
+                }
+            }
+
+            absolute_path = mk2::string::stot<Char>("", L"");
+            for (auto &&item : current_crumbs)
+            {
+                absolute_path += mk2::string::stot<Char>("/", L"/") + item;
+            }
         }
 
         return mk2::filesystem::detail::glob_impl(absolute_path);
