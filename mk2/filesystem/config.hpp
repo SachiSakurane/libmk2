@@ -9,6 +9,7 @@
 #   include <boost/filesystem.hpp>
 #   ifndef LIBMK2_FILESYSTEM_USING_BOOST
 #       define LIBMK2_FILESYSTEM_USING_BOOST
+#   endif
 #elif __has_include(<filesystem>)
 #   include <filesystem>
 #   define LIBMK2_FILESYSTEM_INCLUDED_FILESYSTEM

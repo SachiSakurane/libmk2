@@ -12,7 +12,7 @@
 
 #include <mk2/filesystem/config.hpp>
 #include <mk2/filesystem/path.hpp>
-#include <mk2/iterator/select_iterator.hpp.hpp>
+#include <mk2/iterator/select_iterator.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/range/iterator_range.hpp>
@@ -78,7 +78,8 @@ namespace filesystem {
                 const std::basic_string<Char>& path,
                 std::vector<std::basic_string<Char>>& result)
         {
-            const auto next = [bread_crumbs_iter](){ return ++bread_crumbs_iter; }();
+            Iter copy_bread_crumbs_iter = bread_crumbs_iter;
+            const auto next = [&](){ return ++copy_bread_crumbs_iter; }();
 
             if(mk2::filesystem::detail::find_glob_char(*bread_crumbs_iter))
             {
@@ -147,13 +148,12 @@ namespace filesystem {
         if(!mk2::filesystem::is_absolute(path))
         {
             auto current_path = mk2::filesystem::using_fs::current_path();
-            auto transform = [](const using_fs::path& path) { return mk2::filesystem::get_string(path); };
+
+            auto transform = [](const using_fs::path& path) { return mk2::filesystem::get_string<Char>(path); };
 
             namespace mk2iter = mk2::iterator;
-            auto current_crumbs = std::vector<std::basic_string<Char>>{
-                mk2iter::make_value_transform_iterator(std::begin(current_path), transform),
-                std::end(current_path)
-            };
+            auto begin = mk2iter::make_select_iterator(std::begin(current_path), transform);
+            std::vector<std::basic_string<Char>> current_crumbs{begin, begin.clone(std::end(current_path))};
 
             std::vector<std::basic_string<Char>> bread_crumbs;
             boost::split(bread_crumbs, path, boost::is_any_of(mk2::string::stot<Char>("/", L"/")));

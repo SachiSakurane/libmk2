@@ -38,9 +38,9 @@ namespace string {
         {
             char c_;
 
-            char_dist(char c, wchar_t) : c_(c){}
+            constexpr char_dist(char c, wchar_t) : c_(c){}
 
-            auto operator()() const { return c_; }
+            constexpr auto operator()() const { return c_; }
         };
 
         template<>
@@ -48,9 +48,9 @@ namespace string {
         {
             wchar_t c_;
 
-            char_dist(char, wchar_t c) : c_(c){}
+            constexpr char_dist(char, wchar_t c) : c_(c){}
 
-            auto operator()() const { return c_; }
+            constexpr auto operator()() const { return c_; }
         };
     }
 
