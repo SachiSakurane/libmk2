@@ -86,7 +86,6 @@ namespace filesystem {
             if(mk2::filesystem::detail::find_glob_char(bread_crumbs))
             {
                 auto filter = std::regex(mk2::filesystem::detail::glob_to_regex(path + bread_crumbs));
-
                 for (auto &&candidacy : boost::make_iterator_range(mk2::filesystem::using_fs::directory_iterator{mk2::filesystem::using_fs::path{path + mk2::string::stot<Char>("/", L"/")}},
                                                                    mk2::filesystem::using_fs::directory_iterator{}))
                 {
@@ -108,10 +107,10 @@ namespace filesystem {
 
             if(next != bread_crumbs_iter_end)
             {
-                auto next_path = path + bread_crumbs + mk2::string::stot<Char>("/", L"/");
-                if(mk2::filesystem::using_fs::exists(next_path))
+                auto next_path = path + bread_crumbs;
+                if(mk2::filesystem::using_fs::exists(next_path.empty() ? mk2::string::stot<Char>("/", L"/") : next_path))
                 {
-                    glob_impl_1(next, bread_crumbs_iter_end, next_path, result);
+                    glob_impl_1(next, bread_crumbs_iter_end, next_path + mk2::string::stot<Char>("/", L"/"), result);
                 }
             }
             else
@@ -183,6 +182,7 @@ namespace filesystem {
                 absolute_path += mk2::string::stot<Char>("/", L"/") + *item;
             }
         }
+
         return mk2::filesystem::detail::glob_impl(absolute_path);
     }
 
