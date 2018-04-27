@@ -68,7 +68,7 @@ namespace filesystem {
         template<class Char>
         auto find_glob_char(const std::basic_string<Char>& s)
         {
-            return s.find_first_of(mk2::string::stot<Char>("*?[]!", L"*?[]!"));
+            return s.find_first_of(mk2::string::stot<Char>("*?[]!", L"*?[]!")) != std::basic_string<Char>::npos;
         }
 
         template<class Char, class Iter>
@@ -80,16 +80,15 @@ namespace filesystem {
         {
             Iter copy_bread_crumbs_iter = bread_crumbs_iter;
             const auto next = [&](){ return ++copy_bread_crumbs_iter; }();
+            const auto bread_crumbs = *bread_crumbs_iter;
 
-            if(mk2::filesystem::detail::find_glob_char(*bread_crumbs_iter))
+            //glob表現が見つかった場合、派生先を再帰して捜査する
+            if(mk2::filesystem::detail::find_glob_char(bread_crumbs))
             {
-                auto next_path = path + mk2::string::stot<Char>("/", L"/") + *bread_crumbs_iter;
-                auto filter = std::regex(mk2::filesystem::detail::glob_to_regex(next_path));
+                auto filter = std::regex(mk2::filesystem::detail::glob_to_regex(path + bread_crumbs));
 
-                //glob表現が見つかった場合、派生で捜査する
-                //nextがendならresultに突っ込む
-                for (auto &&candidacy : boost::make_iterator_range(mk2::filesystem::using_fs::directory_iterator(path),
-                                                                   mk2::filesystem::using_fs::directory_iterator()))
+                for (auto &&candidacy : boost::make_iterator_range(mk2::filesystem::using_fs::directory_iterator{mk2::filesystem::using_fs::path{path + mk2::string::stot<Char>("/", L"/")}},
+                                                                   mk2::filesystem::using_fs::directory_iterator{}))
                 {
                     auto candidacy_path = mk2::filesystem::get_string<Char>(candidacy.path());
 
@@ -97,7 +96,7 @@ namespace filesystem {
                     {
                         if(next != bread_crumbs_iter_end)
                         {
-                            glob_impl_1(next, bread_crumbs_iter_end, next_path, result);
+                            glob_impl_1(next, bread_crumbs_iter_end, candidacy_path + mk2::string::stot<Char>("/", L"/"), result);
                         }
                         else
                         {
@@ -109,7 +108,7 @@ namespace filesystem {
 
             if(next != bread_crumbs_iter_end)
             {
-                auto next_path = path + mk2::string::stot<Char>("/", L"/") + *bread_crumbs_iter;
+                auto next_path = path + bread_crumbs + mk2::string::stot<Char>("/", L"/");
                 if(mk2::filesystem::using_fs::exists(next_path))
                 {
                     glob_impl_1(next, bread_crumbs_iter_end, next_path, result);
@@ -117,7 +116,7 @@ namespace filesystem {
             }
             else
             {
-                auto next_path = path + *bread_crumbs_iter;
+                auto next_path = path + bread_crumbs;
                 if(mk2::filesystem::using_fs::exists(next_path))
                     result.emplace_back(next_path);
             }
@@ -173,13 +172,17 @@ namespace filesystem {
                 }
             }
 
-            absolute_path = mk2::string::stot<Char>("", L"");
-            for (auto &&item : current_crumbs)
+            if(current_crumbs.empty())
             {
-                absolute_path += mk2::string::stot<Char>("/", L"/") + item;
+                return {};
+            }
+
+            absolute_path = mk2::string::stot<Char>("", L"");
+            for (auto item = ++current_crumbs.begin(); item != current_crumbs.end(); ++item)
+            {
+                absolute_path += mk2::string::stot<Char>("/", L"/") + *item;
             }
         }
-
         return mk2::filesystem::detail::glob_impl(absolute_path);
     }
 
