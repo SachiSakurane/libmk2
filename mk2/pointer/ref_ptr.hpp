@@ -20,6 +20,8 @@ namespace pointer{
 
         ref_ptr() : elem_(nullptr) {}
 
+        ref_ptr(std::nullptr_t) : elem_(nullptr) {}
+
         template<typename Type2>
         ref_ptr(const ref_ptr<Type2>& obj) : elem_(obj.elem_) {}
 
