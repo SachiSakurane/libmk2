@@ -19,9 +19,7 @@ namespace iterator{
         using value_type        = typename Container::value_type;
         using difference_type   = size_t;
         using pointer           = typename Container::pointer;
-        using const_pointer     = typename Container::const_pointer;
         using reference         = typename Container::reference;
-        using const_reference   = typename Container::const_reference;
 
         constexpr index_iterator(Container &c, std::size_t index = 0u) : container_(c), index_(index){}
 

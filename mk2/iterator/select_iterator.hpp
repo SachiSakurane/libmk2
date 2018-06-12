@@ -11,6 +11,7 @@
 
 namespace mk2{
 namespace iterator{
+    
     template<class Iterator, class UnaryFunction>
     class select_iterator
     {
