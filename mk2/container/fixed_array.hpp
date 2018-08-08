@@ -29,16 +29,17 @@ namespace container{
 
     public:
         typedef Type value_type;
-        typedef value_type &reference;
-        typedef const value_type &const_reference;
+        typedef value_type& reference;
+        typedef const value_type& const_reference;
         typedef mk2::iterator::index_iterator<array> iterator;
         typedef mk2::iterator::index_iterator<const array> const_iterator;
-        typedef value_type *pointer;
-        typedef const value_type *const_pointer;
+        typedef value_type* pointer;
+        typedef const value_type* const_pointer;
         typedef std::size_t size_type;
         typedef std::ptrdiff_t difference_type;
         typedef std::reverse_iterator<iterator> reverse_iterator;
         typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+        typedef Allocator allocator_type;
 
         explicit fixed_array(size_t size, const Allocator &a = Allocator());
 

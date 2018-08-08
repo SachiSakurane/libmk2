@@ -23,6 +23,23 @@ namespace iterator{
 
         constexpr index_iterator(Container &c, std::size_t index = 0u) : container_(c), index_(index){}
 
+        constexpr index_iterator(const index_iterator& obj) : container_(obj.container_), index_(obj.index_){}
+        constexpr index_iterator(index_iterator&& obj) : container_(obj.container_), index_(obj.index_){}
+    
+        index_iterator& operator=(const index_iterator& obj)
+        {
+            this->container_ = obj.container_;
+            this->index_ = obj.index_;
+            return *this;
+        }
+    
+        index_iterator& operator=(index_iterator&& obj)
+        {
+            this->container_ = std::move(obj.container_);
+            this->index_ = std::move(obj.index_);
+            return *this;
+        }
+        
         constexpr auto operator *() -> decltype(auto)
         {
             return container_[index_];
