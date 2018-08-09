@@ -23,8 +23,8 @@ namespace mk2 { namespace simd { namespace xsimd {
         for (int l = 0; l < lags_num; ++l)
         {
             auto x1 = xt::view(src, xt::range(0, size - l));
-            auto x2 = xt::view(src, xt::range(l, size - l));
-            dest[l] = xt::sum(x1 * x2)();
+            auto x2 = xt::view(src, xt::range(l, size));
+            xt::view(dest, xt::range(l, l + 1)) = xt::sum(x1 * x2);
         }
     }
 
