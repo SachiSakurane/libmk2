@@ -22,6 +22,14 @@ namespace mk2 { namespace simd { namespace ipp {
         template<> struct ipps_fft_spec_c_impl<Ipp64f> { using type = IppsFFTSpec_C_64f; };
         template<> struct ipps_fft_spec_c_impl<Ipp32fc> { using type = IppsFFTSpec_C_32fc; };
         template<> struct ipps_fft_spec_c_impl<Ipp64fc> { using type = IppsFFTSpec_C_64fc; };
+    
+        template<class type>
+        struct ipps_iir_state_impl{};
+    
+        template<> struct ipps_iir_state_impl<Ipp32f> { using type = IppsIIRState_32f; };
+        template<> struct ipps_iir_state_impl<Ipp64f> { using type = IppsIIRState_64f; };
+        template<> struct ipps_iir_state_impl<Ipp32fc> { using type = IppsIIRState_32fc; };
+        template<> struct ipps_iir_state_impl<Ipp64fc> { using type = IppsIIRState_64fc; };
     }
     
     template<class Type>
@@ -29,4 +37,7 @@ namespace mk2 { namespace simd { namespace ipp {
     
     template<class Type>
     using ipps_fft_spec_c = typename detail::ipps_fft_spec_c_impl<Type>::type;
+            
+    template<class Type>
+    using ipps_iir_state = typename detail::ipps_iir_state_impl<Type>::type;
 }}}

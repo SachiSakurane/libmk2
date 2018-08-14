@@ -19,7 +19,7 @@ namespace mk2 { namespace simd { namespace ipp
     public:
         ring_buffer(size_type size, Type v) : size_(size), index_(0), container_(size, v) {}
         
-        void set(const Type* sample, size_type size)
+        void set_sample(const Type* sample, size_type size)
         {
             auto data = container_.data();
             if (size + index_ < size_)
@@ -30,7 +30,7 @@ namespace mk2 { namespace simd { namespace ipp
             else if(size + index_ == size_)
             {
                 function::ipps_copy(sample, data + index_, static_cast<int>(size));
-                index_ = size;
+                index_ = 0;
             }
             else
             {
@@ -38,6 +38,28 @@ namespace mk2 { namespace simd { namespace ipp
                 function::ipps_copy(sample, data + index_, static_cast<int>(section_size));
                 index_ = size - section_size;
                 function::ipps_copy(sample + section_size, data, static_cast<int>(index_));
+            }
+        }
+    
+        void set_move_sample(const Type* sample, size_type size)
+        {
+            auto data = container_.data();
+            if (size + index_ < size_)
+            {
+                function::ipps_move(sample, data + index_, static_cast<int>(size));
+                index_ += size;
+            }
+            else if(size + index_ == size_)
+            {
+                function::ipps_move(sample, data + index_, static_cast<int>(size));
+                index_ = 0;
+            }
+            else
+            {
+                auto section_size = size_ - index_;
+                function::ipps_move(sample, data + index_, static_cast<int>(section_size));
+                index_ = size - section_size;
+                function::ipps_move(sample + section_size, data, static_cast<int>(index_));
             }
         }
         
@@ -58,6 +80,8 @@ namespace mk2 { namespace simd { namespace ipp
             }
         }
     
+        auto size() const {return size_;}
+        
     private:
         const std::size_t size_;
         size_type index_;

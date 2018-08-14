@@ -6,78 +6,41 @@
 
 #include <ipps.h>
 
+#include <mk2/simd/ipp/function/macro.hpp>
+
 namespace mk2 { namespace simd { namespace ipp { namespace function {
     
-    // ipps_fft_init
-    namespace detail
-    {
-        template<class IppsFFTSpec>
-        inline IppStatus ipps_fft_init_impl(IppsFFTSpec**, int, int, IppHintAlgorithm, Ipp8u*, Ipp8u*);
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor)                \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_R_32f##descriptor, IppsFFTSpec_R_32f)   \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_R_64f##descriptor, IppsFFTSpec_R_64f)   \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_C_32f##descriptor, IppsFFTSpec_C_32f)   \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_C_64f##descriptor, IppsFFTSpec_C_64f)   \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_C_32fc##descriptor, IppsFFTSpec_C_32fc)   \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_C_64fc##descriptor, IppsFFTSpec_C_64fc)
+                
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
+    IppsFFTSpec** ppfft_spec, int order, int flag, Ipp8u* pspec, Ipp8u* pspec_buffer
+                
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
+    ppfft_spec, order, flag, ippAlgHintNone, pspec, pspec_buffer
     
-        template<> inline IppStatus ipps_fft_init_impl<IppsFFTSpec_R_32f>
-            (IppsFFTSpec_R_32f** ppfft_spec, int order, int flag, IppHintAlgorithm hint, Ipp8u* pspec, Ipp8u* pspec_buffer)
-        { return ippsFFTInit_R_32f(ppfft_spec, order, flag, hint, pspec, pspec_buffer); }
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_fft_init, ippsFFTInit, , IppsFFTSpec)
     
-        template<> inline IppStatus ipps_fft_init_impl<IppsFFTSpec_R_64f>
-            (IppsFFTSpec_R_64f** ppfft_spec, int order, int flag, IppHintAlgorithm hint, Ipp8u* pspec, Ipp8u* pspec_buffer)
-        { return ippsFFTInit_R_64f(ppfft_spec, order, flag, hint, pspec, pspec_buffer); }
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
     
-        template<> inline IppStatus ipps_fft_init_impl<IppsFFTSpec_C_32f>
-            (IppsFFTSpec_C_32f** ppfft_spec, int order, int flag, IppHintAlgorithm hint, Ipp8u* pspec, Ipp8u* pspec_buffer)
-        { return ippsFFTInit_C_32f(ppfft_spec, order, flag, hint, pspec, pspec_buffer); }
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
+    int order, int flag, int* pspec_size, int* pspec_buffer_size, int* pbuffer_size
     
-        template<> inline IppStatus ipps_fft_init_impl<IppsFFTSpec_C_64f>
-            (IppsFFTSpec_C_64f** ppfft_spec, int order, int flag, IppHintAlgorithm hint, Ipp8u* pspec, Ipp8u* pspec_buffer)
-        { return ippsFFTInit_C_64f(ppfft_spec, order, flag, hint, pspec, pspec_buffer); }
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
+    order, flag, ippAlgHintNone, pspec_size, pspec_buffer_size, pbuffer_size
     
-        template<> inline IppStatus ipps_fft_init_impl<IppsFFTSpec_C_32fc>
-            (IppsFFTSpec_C_32fc** ppfft_spec, int order, int flag, IppHintAlgorithm hint, Ipp8u* pspec, Ipp8u* pspec_buffer)
-        { return ippsFFTInit_C_32fc(ppfft_spec, order, flag, hint, pspec, pspec_buffer); }
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_fft_get_size, ippsFFTGetSize, , IppsFFTSpec)
     
-        template<> inline IppStatus ipps_fft_init_impl<IppsFFTSpec_C_64fc>
-            (IppsFFTSpec_C_64fc** ppfft_spec, int order, int flag, IppHintAlgorithm hint, Ipp8u* pspec, Ipp8u* pspec_buffer)
-        { return ippsFFTInit_C_64fc(ppfft_spec, order, flag, hint, pspec, pspec_buffer); }
-    }
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
     
-    template<class IppsFFTSpec> inline IppStatus ipps_fft_init
-        (IppsFFTSpec** ppfft_spec, int order, int flag, Ipp8u* pspec, Ipp8u* pspec_buffer)
-    { return detail::ipps_fft_init_impl(ppfft_spec, order, flag, ippAlgHintNone, pspec, pspec_buffer); }
-    
-    // ipps_fft_get_size
-    namespace detail
-    {
-        template<class IppsFFTSpec>
-        inline IppStatus ipps_fft_get_size_impl(int order, int flag, IppHintAlgorithm hint, int* pspec_size, int* pspec_buffer_size, int* pbuffer_size);
-    
-        template<> inline IppStatus ipps_fft_get_size_impl<IppsFFTSpec_R_32f>
-            (int order, int flag, IppHintAlgorithm hint, int* pspec_size, int* pspec_buffer_size, int* pbuffer_size)
-        { return ippsFFTGetSize_R_32f(order, flag, hint, pspec_size, pspec_buffer_size, pbuffer_size); }
-    
-        template<> inline IppStatus ipps_fft_get_size_impl<IppsFFTSpec_R_64f>
-            (int order, int flag, IppHintAlgorithm hint, int* pspec_size, int* pspec_buffer_size, int* pbuffer_size)
-        { return ippsFFTGetSize_R_64f(order, flag, hint, pspec_size, pspec_buffer_size, pbuffer_size); }
-    
-        template<> inline IppStatus ipps_fft_get_size_impl<IppsFFTSpec_C_32f>
-            (int order, int flag, IppHintAlgorithm hint, int* pspec_size, int* pspec_buffer_size, int* pbuffer_size)
-        { return ippsFFTGetSize_C_32f(order, flag, hint, pspec_size, pspec_buffer_size, pbuffer_size); }
-    
-        template<> inline IppStatus ipps_fft_get_size_impl<IppsFFTSpec_C_64f>
-            (int order, int flag, IppHintAlgorithm hint, int* pspec_size, int* pspec_buffer_size, int* pbuffer_size)
-        { return ippsFFTGetSize_C_64f(order, flag, hint, pspec_size, pspec_buffer_size, pbuffer_size); }
-    
-        template<> inline IppStatus ipps_fft_get_size_impl<IppsFFTSpec_C_32fc>
-            (int order, int flag, IppHintAlgorithm hint, int* pspec_size, int* pspec_buffer_size, int* pbuffer_size)
-        { return ippsFFTGetSize_C_32fc(order, flag, hint, pspec_size, pspec_buffer_size, pbuffer_size); }
-    
-        template<> inline IppStatus ipps_fft_get_size_impl<IppsFFTSpec_C_64fc>
-            (int order, int flag, IppHintAlgorithm hint, int* pspec_size, int* pspec_buffer_size, int* pbuffer_size)
-        { return ippsFFTGetSize_C_64fc(order, flag, hint, pspec_size, pspec_buffer_size, pbuffer_size); }
-    }
-    
-    template<class IppsFFTSpec> inline IppStatus ipps_fft_get_size
-        (int order, int flag, int* pspec_size, int* pspec_buffer_size, int* pbuffer_size)
-    { return detail::ipps_fft_get_size_impl<IppsFFTSpec>(order, flag, ippAlgHintNone, pspec_size, pspec_buffer_size, pbuffer_size); }
-    
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
 
     namespace detail
     {
