@@ -14,29 +14,59 @@ namespace mk2 { namespace simd { namespace ipp
     class lpc
     {
     public:
-        lpc(int order) : 
-            order_(order), lags_num_(order + 1),
-            r_(lags_num_),
-            a_(lags_num_), e_(lags_num_),
-            a_(lags_num_), e_(lags_num_)
+        lpc(int order, int size) : 
+            order_(order), delay_(order + 1), size_(size),
+            r_(delay_),
+            a_(delay_), e_(delay_),
+            a_(delay_), e_(delay_)
         {
+            assert(order > 0)
         }
 
-        void process(const Type* src, Type* dst, int len)
+        void process(const Type* src, Type* dst)
         {
-            for (int l = 0; l < lags_num; ++l)
+            for (int l = 0; l < delay_; ++l)
             {
                 Type dp = 0;
                 function::ipps_dot_prod(src, src + l, len - l, dp);
                 r_[l] = dp;
             }
             
+            function::ipps_filp_inplace(r_.data(), static_cast<int>(r_.size()));
+            auto r_back = r_.size() - 1;
+            function::ipps_zero(a_.data(), static_cast<int>(a_.size()));
+            function::ipps_zero(e_.data(), static_cast<int>(e_.size()));
+            
+            a_[0] = e_[0] = static_cast<Type>(1);
+            a_[1] = -r_[r_back - 1] * a_[1];
+            e_[1] = r_[r_back] + r_[r_back - 1] * a_[1];
+            U_[0] = static_cast<Type>(0);
+            
+            for (int i = 1; i < order_; ++i)
+            {
+                Type lambda = static_cast<Type>(0);
+                
+                function::ipps_dot_prod(a_.data(), r_.data() + (r_back - i), i, lambda);
+                lambda /= -e_[i];
+                
+                U_[i + 1] = static_cast<Type>(1);
+                function::ipps_copy(a_.data() + 1, U_.data() + 1, i);
+                function::ipps_filp(U_.data(), V_.data(), i + 2);
+                
+                function::ipps_mulc_inplace(lambda, V_.data(), i + 2);
+                function::ipps_add(U_.data(), V_.data(), a_.data(), i + 2);
+                
+                e_[i + 1] = e_[i] * (1.0 - lambda * lambda);
+            }
+            
+            // filter
             
         }
 
     private:
         const int order_;
-        const int lags_num_;
+        const int delay_;
+        const int size_;
         mk2::container::fixed_array<Type> r_;
         mk2::container::fixed_array<Type> a_, e_;
         mk2::container::fixed_array<Type> U_, V_;
