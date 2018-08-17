@@ -39,7 +39,7 @@ namespace mk2 { namespace simd { namespace ipp
                 auto z = std::exp(std::complex<Type>(0.0, -mk2::math::two_pi<Type> * n / size));
                 auto ipp_z = complex_type{z.real(), z.imag()};
                 function::ipps_set(ipp_z, z_[i].data(), order_);
-                function::ipps_pow<function::precision_high>(z_[i].data(), num.data(), order_);
+                function::ipps_pow<function::precision_high<Type>>(z_[i].data(), num.data(), order_);
                 function::ipps_flip(z_[i].data(), order_);
             }
         }
@@ -81,6 +81,7 @@ namespace mk2 { namespace simd { namespace ipp
             }
             
             // filter
+            
             //for ()
             //complex_type numerator(static_cast<Type>(0), static_cast<Type>(0));
             //complex_type denominator(static_cast<Type>(0), static_cast<Type>(0));
