@@ -6,6 +6,8 @@
 
 #include <ipps.h>
 
+#include <mk2/simd/ipp/type_traits.hpp>
+
 namespace mk2 { namespace simd { namespace ipp {
     namespace detail
     {
@@ -30,6 +32,14 @@ namespace mk2 { namespace simd { namespace ipp {
         template<> struct ipps_iir_state_impl<Ipp64f> { using type = IppsIIRState_64f; };
         template<> struct ipps_iir_state_impl<Ipp32fc> { using type = IppsIIRState_32fc; };
         template<> struct ipps_iir_state_impl<Ipp64fc> { using type = IppsIIRState_64fc; };
+        
+        template<class Type>
+        struct ipps_complex_impl{};
+    
+        template<> struct ipps_complex_impl<Ipp32f> { using type = Ipp32fc; };
+        template<> struct ipps_complex_impl<Ipp64f> { using type = Ipp64fc; };
+        template<> struct ipps_complex_impl<Ipp32fc> { using type = Ipp32fc; };
+        template<> struct ipps_complex_impl<Ipp64fc> { using type = Ipp64fc; };
     }
     
     template<class Type>
@@ -40,4 +50,7 @@ namespace mk2 { namespace simd { namespace ipp {
             
     template<class Type>
     using ipps_iir_state = typename detail::ipps_iir_state_impl<Type>::type;
+    
+    template<class Type>
+    using ipps_complex = typename detail::ipps_complex_impl<Type>::type;
 }}}

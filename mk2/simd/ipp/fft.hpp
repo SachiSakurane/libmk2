@@ -5,7 +5,7 @@
 #pragma once
 
 #include <mk2/simd/ipp/type.hpp>
-#include <mk2/simd/ipp/function/1d/fft.hpp>
+#include <mk2/simd/ipp/function/fft.hpp>
 
 namespace mk2 { namespace simd { namespace ipp {
     template<class Type>
