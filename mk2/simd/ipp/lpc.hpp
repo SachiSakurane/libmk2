@@ -29,9 +29,9 @@ namespace mk2 { namespace simd { namespace ipp
             assert(order > 0);
             // z (0, -2 * pi * 0...n / size)
             // filp( exp(z) )
-            array_type<Type> num(order_);
+            array_type<complex_type> num{order_, static_cast<complex_type>(0)};
             for (int i = 0; i < order_; ++i)
-                num[i] = static_cast<Type>(i);
+                num[i] = static_cast<complex_type>(i);
     
             function::ipps_zero(z_.data(), static_cast<int>(z_.size()));
             for (int i = 0; i < size_; ++i)
@@ -39,7 +39,8 @@ namespace mk2 { namespace simd { namespace ipp
                 auto z = std::exp(std::complex<Type>(0.0, -mk2::math::two_pi<Type> * n / size));
                 auto ipp_z = complex_type{z.real(), z.imag()};
                 function::ipps_set(ipp_z, z_[i].data(), order_);
-                function::ipps_p();
+                function::ipps_pow<function::precision_high>(z_[i].data(), num.data(), order_);
+                function::ipps_flip(z_[i].data(), order_);
             }
         }
 
