@@ -15,7 +15,9 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f_A24##descriptor, Ipp32f, precision_high<Ipp32f>)    \
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f_A26##descriptor, Ipp64f, precision_low<Ipp64f>)     \
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f_A50##descriptor, Ipp64f, precision_mid<Ipp64f>)     \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f_A53##descriptor, Ipp64f, precision_high<Ipp64f>)    \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f_A53##descriptor, Ipp64f, precision_high<Ipp64f>)
+    
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC_ALL_PRECISION_COMPLEX(base_struct, base_func, descriptor)                \
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32fc_A11##descriptor, Ipp32fc, precision_low<Ipp32f>)   \
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32fc_A21##descriptor, Ipp32fc, precision_mid<Ipp32f>)   \
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32fc_A24##descriptor, Ipp32fc, precision_high<Ipp32f>)  \
@@ -24,8 +26,9 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64fc_A53##descriptor, Ipp64fc, precision_high<Ipp64f>)   
     
     
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor) \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC_ALL_PRECISION(base_struct, base_func, descriptor)
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor)             \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC_ALL_PRECISION(base_struct, base_func, descriptor)             \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC_ALL_PRECISION_COMPLEX(base_struct, base_func, descriptor)
     
     #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
     const Type* psrc1, const Type* psrc2, Type* pdst, int len
@@ -40,9 +43,25 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     
     
     
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor) \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f_A24##descriptor, Ipp32f, precision_high<Ipp32f>)\
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f_A53##descriptor, Ipp64f, precision_high<Ipp64f>)\
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC_ALL_PRECISION_COMPLEX(base_struct, base_func, descriptor)
+    
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
+    const Type* psrc, Type* pdst, int len
+    
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
+    psrc, pdst, len
+    
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_abs, ippsAbs, , Type, PrecisionType)
+    
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
     
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
     
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC_ALL_PRECISION
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC_ALL_PRECISION_COMPLEX
     
 }}}}
