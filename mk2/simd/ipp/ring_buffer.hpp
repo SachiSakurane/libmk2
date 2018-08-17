@@ -6,7 +6,7 @@
 
 #include <mk2/container/fixed_array.hpp>
 #include <mk2/container/container_traits.hpp>
-#include <mk2/simd/ipp/function/initialization.hpp>
+#include <mk2/simd/ipp/function/1d/initialization.hpp>
 
 namespace mk2 { namespace simd { namespace ipp
 {

@@ -5,8 +5,9 @@
 #pragma once
 
 #include <mk2/container/fixed_array.hpp>
-#include <mk2/simd/ipp/function/initialization.hpp>
-#include <mk2/simd/ipp/function/statistical.hpp>
+#include <mk2/math/constants.hpp>
+#include <mk2/simd/ipp/function/1d/initialization.hpp>
+#include <mk2/simd/ipp/function/1d/statistical.hpp>
 
 namespace mk2 { namespace simd { namespace ipp
 {
@@ -14,18 +15,32 @@ namespace mk2 { namespace simd { namespace ipp
     class lpc
     {
         using complex_type =  mk2::simd::ipp::ipps_complex<Type>;
+        template<class ElementType>
+        using array_type = mk2::container::fixed_array<ElementType>;
+        
     public:
         lpc(int order, int size) : 
             order_(order), delay_(order + 1), size_(size),
             r_(delay_),
             a_(delay_), e_(delay_),
             U_(delay_ + 1), V_(delay_ + 1),
-            z_(size * order_)
+            z_(size_, array_type(order_))
         {
-            assert(order > 0)
+            assert(order > 0);
             // z (0, -2 * pi * 0...n / size)
             // filp( exp(z) )
-            
+            array_type<Type> num(order_);
+            for (int i = 0; i < order_; ++i)
+                num[i] = static_cast<Type>(i);
+    
+            function::ipps_zero(z_.data(), static_cast<int>(z_.size()));
+            for (int i = 0; i < size_; ++i)
+            {
+                auto z = std::exp(std::complex<Type>(0.0, -mk2::math::two_pi<Type> * n / size));
+                auto ipp_z = complex_type{z.real(), z.imag()};
+                function::ipps_set(ipp_z, z_[i].data(), order_);
+                function::ipps_p();
+            }
         }
 
         void process(const Type* src, Type* dst)
@@ -78,10 +93,10 @@ namespace mk2 { namespace simd { namespace ipp
         const int order_;
         const int delay_;
         const int size_;
-        mk2::container::fixed_array<Type> r_;
-        mk2::container::fixed_array<Type> a_, e_;
-        mk2::container::fixed_array<Type> U_, V_;
-        mk2::container::fixed_array<complex_type> z_;
+        array_type<Type> r_;
+        array_type<Type> a_, e_;
+        array_type<Type> U_, V_;
+        array_type<array_type<complex_type>> z_;
         
     };
 }

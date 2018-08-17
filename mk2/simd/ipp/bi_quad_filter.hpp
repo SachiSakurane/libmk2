@@ -10,7 +10,7 @@
 #include <mk2/container/fixed_array.hpp>
 #include <mk2/math/constants.hpp>
 #include <mk2/simd/ipp/type.hpp>
-#include <mk2/simd/ipp/function/filtering.hpp>
+#include <mk2/simd/ipp/function/1d/filtering.hpp>
 
 // 双二次フィルタ
 
