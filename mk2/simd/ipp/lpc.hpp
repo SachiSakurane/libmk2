@@ -24,6 +24,7 @@ namespace mk2 { namespace simd { namespace ipp
             r_(delay_),
             a_(delay_), e_(delay_),
             U_(delay_ + 1), V_(delay_ + 1),
+            numerator_(size_), denominator_(size_),
             z_(size_, array_type(order_))
         {
             assert(order > 0);
@@ -81,14 +82,17 @@ namespace mk2 { namespace simd { namespace ipp
             }
             
             // filter
+            function::ipps_zero(numerator_.data(), static_cast<int>(numerator_.size()));
+            function::ipps_zero(denominator_.data(), static_cast<int>(denominator_.size()));
             
-            //for ()
-            //complex_type numerator(static_cast<Type>(0), static_cast<Type>(0));
-            //complex_type denominator(static_cast<Type>(0), static_cast<Type>(0));
+            for (int i = 0; i < size_; ++i)
+            {   
+                function::ipps_dot_prod(e_.data() - n, z_.data(), numerator_.data() + i, static_cast<int>(e_.size()));
+                function::ipps_dot_prod(a_.data() - n, z_.data(), denominator_.data() + i, static_cast<int>(a_.size()));
+            }
             
-            //function::ipps_dot_prod(e_.data() - n, z_.data(), numerator, static_cast<int>(e_.size()));
-            //function::ipps_dot_prod(a_.data(), z_.data(), numerator, static_cast<int>(a_.size()));
-            //std::abs(numerator)
+            function::ipps_div_inplace(numerator_.data(), denominator_.data(), size_);
+            function::ipps_abs<function::precision_high<Type>>(denominator_.data(), dst, size_);
         }
 
     private:
@@ -98,8 +102,8 @@ namespace mk2 { namespace simd { namespace ipp
         array_type<Type> r_;
         array_type<Type> a_, e_;
         array_type<Type> U_, V_;
+        array_type<complex_type> numerator_, denominator_;
         array_type<array_type<complex_type>> z_;
-        
     };
 }
 }
