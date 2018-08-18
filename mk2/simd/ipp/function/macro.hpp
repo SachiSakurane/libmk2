@@ -4,14 +4,16 @@
 
 #pragma once
 
+#include <boost/preprocessor.hpp>
+
 namespace mk2 { namespace simd { namespace ipp { namespace function {
     
-    #define MK2_IPP_C1(a) class a
-    #define MK2_IPP_C2(a, b) class a, class b
-    #define MK2_IPP_C3(a, b, c) class a, class b, class c
-    #define MK2_IPP_C4(a, b, c, d) class a, class b, class c, class d
-    #define IPP_GET_MACRO_NAME(_1, _2, _3, _4, NAME, ...) NAME
-    #define IPP_ADD_CLASS(...) IPP_GET_MACRO_NAME(__VA_ARGS__, MK2_IPP_C4, MK2_IPP_C3, MK2_IPP_C2, MK2_IPP_C1)(__VA_ARGS__)
+	#define IPP_ADD_CLASS_IMPL_FOR_PRED(r, state) BOOST_PP_LESS(BOOST_PP_TUPLE_ELEM(0, state), BOOST_PP_TUPLE_ELEM(1, state))
+	#define IPP_ADD_CLASS_IMPL_FOR_OP(r, state) (BOOST_PP_INC(BOOST_PP_TUPLE_ELEM(0, state)), BOOST_PP_TUPLE_ELEM(1, state), BOOST_PP_TUPLE_ELEM(2, state))
+	#define IPP_ADD_CLASS_IMPL_FOR_MACRO(r, state) BOOST_PP_COMMA_IF(BOOST_PP_TUPLE_ELEM(0, state)) class BOOST_PP_TUPLE_ELEM(BOOST_PP_TUPLE_ELEM(0, state), BOOST_PP_TUPLE_ELEM(2, state))
+
+	#define IPP_ADD_CLASS_IMPL(first, last, ...) BOOST_PP_FOR((first, last, (__VA_ARGS__)), IPP_ADD_CLASS_IMPL_FOR_PRED, IPP_ADD_CLASS_IMPL_FOR_OP, IPP_ADD_CLASS_IMPL_FOR_MACRO)
+	#define IPP_ADD_CLASS(...) IPP_ADD_CLASS_IMPL(0, BOOST_PP_VARIADIC_SIZE(__VA_ARGS__), __VA_ARGS__)
     
     #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func, ...)                                         \
     template<> struct base_struct<__VA_ARGS__>                                                                          \
