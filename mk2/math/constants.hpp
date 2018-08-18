@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <type_traits.hpp>
+#include <type_traits>
 
 namespace mk2 { namespace math {
     
