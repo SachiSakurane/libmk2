@@ -53,7 +53,7 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC_ALL_PRECISION_COMPLEX(base_struct, base_func, descriptor)
     
     #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
-    const Type* psrc, Type* pdst, int len
+    const Type* psrc, Type* pdst, int len, PrecisionType
     
     #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
     psrc, pdst, len

@@ -51,9 +51,7 @@ namespace mk2 { namespace simd { namespace ipp
         {
             for (int l = 0; l < delay_; ++l)
             {
-                Type dp = 0;
-                function::ipps_dot_prod(src, src + l, size_ - l, dp);
-                r_[l] = dp;
+                function::ipps_dot_prod(src, src + l, static_cast<int>(size_ - l), r_.data() + l);
             }
             
             function::ipps_flip_inplace(r_.data(), static_cast<int>(r_.size()));
@@ -70,7 +68,7 @@ namespace mk2 { namespace simd { namespace ipp
             {
                 Type lambda = static_cast<Type>(0);
                 
-                function::ipps_dot_prod(a_.data(), r_.data() + (r_back - i), i, lambda);
+                function::ipps_dot_prod(a_.data(), r_.data() + (r_back - i), i, &lambda);
                 lambda /= -e_[i];
                 
                 U_[i + 1] = static_cast<Type>(1);
@@ -89,12 +87,12 @@ namespace mk2 { namespace simd { namespace ipp
             
             for (int i = 0; i < size_; ++i)
             {   
-                function::ipps_dot_prod(e_.data() + (size_ - 1 - i), z_.data(), numerator_.data() + i, static_cast<int>(e_.size()));
-                function::ipps_dot_prod(a_.data() + (size_ - 1 - i), z_.data(), denominator_.data() + i, static_cast<int>(a_.size()));
+                function::ipps_dot_prod(e_.data() + (size_ - 1 - i), z_.data(), static_cast<int>(e_.size()), numerator_.data() + i);
+                function::ipps_dot_prod(a_.data() + (size_ - 1 - i), z_.data(), static_cast<int>(a_.size()), denominator_.data() + i);
             }
             
             function::ipps_div_inplace(numerator_.data(), denominator_.data(), size_);
-            function::ipps_abs<function::precision_high>(denominator_.data(), dst, size_);
+            function::ipps_abs(denominator_.data(), dst, size_, function::precision_high{});
         }
 
     private:
