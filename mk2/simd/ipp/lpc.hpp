@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include <complex>
+#include <cassert>
+
 #include <mk2/container/fixed_array.hpp>
 #include <mk2/math/constants.hpp>
 #include <mk2/simd/ipp/type.hpp>
