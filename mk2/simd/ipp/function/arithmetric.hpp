@@ -114,6 +114,30 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
+                
+    // normalize not inplace
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
+    const Type* psrc, Type* pdst, int len, Type vsub, Type vdiv
+    
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
+    psrc, pdst, len, vsub, vdiv
+    
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_normalize, ippsNormalize, , Type)
+    
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
+    
+    // normalize inplace
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
+    Type* psrc_dst, int len, Type vsub, Type vdiv
+    
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
+    psrc_dst, len, vsub, vdiv
+    
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_normalize_inplace, ippsNormalize, _I, Type)
+    
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
     
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
     

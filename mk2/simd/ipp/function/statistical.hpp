@@ -55,5 +55,37 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
     
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
-
+    
+    
+    // max min
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor)    \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_16s##descriptor, Ipp16s)    \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32s##descriptor, Ipp32s)    \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f##descriptor, Ipp32f)    \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f##descriptor, Ipp64f)
+    
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
+    const Type* psrc, int len, Type* pdst
+    
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
+    psrc, len, pdst
+    
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_max, ippsMax, , Type)
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_min, ippsMin, , Type)
+    
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
+                
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
+    const Type* psrc, int len, Type* pmin, Type* pmax
+    
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
+    psrc, len, pmin, pmax
+    
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_min_max, ippsMinMax, , Type)
+    
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
+                
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
 }}}}
