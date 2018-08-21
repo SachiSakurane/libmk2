@@ -6,7 +6,7 @@
 
 #include <ipp.h>
 
-#include <mk2/simd/ipp/function/float_precision.h>
+#include <mk2/simd/ipp/function/float_precision.hpp>
 #include <mk2/simd/ipp/function/macro.hpp>
 
 namespace mk2 { namespace simd { namespace ipp { namespace function {
@@ -72,5 +72,22 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
     
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC_ALL_PRECISION
+
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor)    \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f##descriptor, Ipp32f)    \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f##descriptor, Ipp64f)
     
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
+    const Type* psrc, Type* pdst, int len
+    
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
+    psrc, pdst, len
+    
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_near_by_int, ippsNearbyInt, , Type)
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_r_int, ippsRint, , Type)
+    
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
+    
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
 }}}}
