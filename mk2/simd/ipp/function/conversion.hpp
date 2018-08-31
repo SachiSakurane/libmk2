@@ -111,7 +111,44 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
     
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
-    
+
+    // threshold LTGT
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor)    \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_16s##descriptor, Ipp16s, Ipp16s)    \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32s##descriptor, Ipp32s, Ipp32s)    \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f##descriptor, Ipp32f, Ipp32f)    \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f##descriptor, Ipp64f, Ipp64f)    \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_16sc##descriptor, Ipp16sc, Ipp16s)  \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32fc##descriptor, Ipp32fc, Ipp32f)  \
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64fc##descriptor, Ipp64fc, Ipp64f)
+
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
+    const Type1* psrc, Type1* pdst, int len, Type2 level
+
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
+    psrc, pdst, len, level
+
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_threshold_lt, ippsThreshold_LT, , Type1, Type2)
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_threshold_gt, ippsThreshold_GT, , Type1, Type2)
+
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
+
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
+    Type1* psrcdst, int len, Type2 level
+
+    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
+    psrcdst, len, level
+
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_threshold_lt_inplace, ippsThreshold_LT, _I, Type1, Type2)
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_threshold_gt_inplace, ippsThreshold_GT, _I, Type1, Type2)
+
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
+
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
+
+
     // convert
     #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor)    \
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_8s16s##descriptor, Ipp8s, Ipp16s)   \
@@ -127,6 +164,8 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f64f##descriptor, Ipp32f, Ipp64f) \
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64s64f##descriptor, Ipp64s, Ipp64f) \
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f32f##descriptor, Ipp64f, Ipp32f)
+    //IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_24u32u##descriptor, Ipp24u, Ipp32u) \
+    //IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_24u32f##descriptor, Ipp24u, Ipp32f)
     
     #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
     const Type1* psrc, Type2* pdst, int len
@@ -149,6 +188,8 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32s16s##descriptor, Ipp32s, Ipp16s) \
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32s32f##descriptor, Ipp32s, Ipp32f) \
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32s64f##descriptor, Ipp32s, Ipp64f)
+    //IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32u24u##descriptor, Ipp32u, Ipp24u) \
+    //IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f24u##descriptor, Ipp32f, Ipp24u) \
     
     #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
     const Type1* psrc, Type2* pdst, int len, int scale_factor = 0

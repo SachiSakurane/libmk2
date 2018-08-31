@@ -82,9 +82,11 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     
     #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
     psrc, pdst, len
-    
+
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_round, ippsRound, , Type)
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_near_by_int, ippsNearbyInt, , Type)
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_r_int, ippsRint, , Type)
+    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_frac, ippsFrac, , Type)
     
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
