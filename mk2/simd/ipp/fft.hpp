@@ -51,9 +51,9 @@ namespace mk2 { namespace simd { namespace ipp {
             return function::ipps_fft_inv_ctoc(src_re, src_im, dst_re, dst_im, fft_spec_, pfft_work_buf_);
         }
         
-        IppStatus inverse_inplace(const Type* src_re, const Type* src_im, Type* dst_re, Type* dst_im)
+        IppStatus inverse_inplace(Type* src_dst_re, Type* src_dst_im)
         {
-            return function::ipps_fft_inv_ctoc_inplace(src_re, src_im, dst_re, dst_im, fft_spec_, pfft_work_buf_);
+            return function::ipps_fft_inv_ctoc_inplace(src_dst_re, src_dst_im, fft_spec_, pfft_work_buf_);
         }
         
     private:
