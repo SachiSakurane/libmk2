@@ -202,9 +202,9 @@ namespace mk2 { namespace simd { namespace ipp {
 
         ~index_sort() {}
 
-        void process(const FloatType *src1, const FloatType *src2, FloatType *dst, int len)
+        void operator()(const FloatType *src, const FloatType *indexes, FloatType *dst, int len)
         {
-            return interpolation_->process(src1, src2, dst, len);
+            return interpolation_->process(src, indexes, dst, len);
         }
 
         void resize(size_t size) { interpolation_->resize(size); }
