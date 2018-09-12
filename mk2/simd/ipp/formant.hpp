@@ -25,7 +25,7 @@ namespace mk2 { namespace simd { namespace ipp {
             minimul_(size_ - 2)
         {}
         
-        void process(const Type* src, DstType *dst)
+        void operator()(const Type* src, DstType *dst)
         {
             auto round_type = fegetround();
             
