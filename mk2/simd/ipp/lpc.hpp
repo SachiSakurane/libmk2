@@ -50,7 +50,7 @@ namespace mk2 { namespace simd { namespace ipp
             }
         }
 
-        void process(const Type* src, Type* dst)
+        void operator()(const Type* src, Type* dst)
         {
             for (int l = 0; l < delay_; ++l)
             {
