@@ -26,7 +26,7 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     
     #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
     psrc1, psrc2, pdst, len
-    
+
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_add, ippsAdd, , Type)
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_sub, ippsSub, , Type)
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_mul, ippsMul, , Type)

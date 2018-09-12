@@ -125,7 +125,7 @@ namespace container{
 
         value_type *data() noexcept { return elems_; }
 
-        value_type *data() const noexcept { return elems_; }
+        const value_type *data() const noexcept { return elems_; }
 
         void swap(fixed_array& obj)
         {
