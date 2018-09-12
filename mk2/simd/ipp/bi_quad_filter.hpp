@@ -59,12 +59,12 @@ namespace mk2 { namespace simd { namespace ipp {
             function::ipps_copy(cofs, coefficients_.data(), BiQuadOrder * 6);
         }
     
-        void process(const Type* src, Type* dst, int len)
+        void operator()(const Type* src, Type* dst, int len)
         {
             function::ipps_iir(src, dst, len, state);
         }
     
-        void process_inplace(Type* src_dst, int len)
+        void inplace(Type* src_dst, int len)
         {
             function::ipps_iir_inplace(src_dst, len, state);
         }
