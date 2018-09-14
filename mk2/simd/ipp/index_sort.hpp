@@ -204,7 +204,12 @@ namespace mk2 { namespace simd { namespace ipp {
 
         void operator()(const FloatType *src, const FloatType *indexes, FloatType *dst, int len)
         {
-            return interpolation_->process(src, indexes, dst, len);
+            interpolation_->process(src, indexes, dst, len);
+        }
+        
+        void inplace(const FloatType *indexes, FloatType *srcdst, int len)
+        {
+            interpolation_->process(srcdst, indexes, srcdst, len);
         }
 
         void resize(size_t size) { interpolation_->resize(size); }
