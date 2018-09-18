@@ -14,7 +14,7 @@
 
 namespace mk2 { namespace simd { namespace ipp {
     
-    template<class Type, class DstType>
+    template<class SrcType, class DstType>
     class formant
     {
     public:
@@ -25,14 +25,14 @@ namespace mk2 { namespace simd { namespace ipp {
             minimul_(size_ - 2)
         {}
         
-        void operator()(const Type* src, DstType *dst)
+        void operator()(const SrcType* src, DstType *dst)
         {
             auto round_type = fegetround();
             
             fesetround(FE_TONEAREST);
 
             function::ipps_sub(src + 1, src, calc_buf_.data(), size_ - 1);
-            function::ipps_addc_inplace(static_cast<Type>(0.5), calc_buf_.data(), size_ - 1);
+            function::ipps_addc_inplace(static_cast<SrcType>(0.5), calc_buf_.data(), size_ - 1);
             function::ipps_near_by_int(calc_buf_.data(), calc_buf_.data(), static_cast<int>(calc_buf_.size()));
             function::ipps_convert_f2i(calc_buf_.data(), logical_buf_.data(), static_cast<int>(logical_buf_.size()));
     
@@ -44,7 +44,7 @@ namespace mk2 { namespace simd { namespace ipp {
         
     private:
         const int size_;
-        mk2::container::fixed_array<Type> calc_buf_;
+        mk2::container::fixed_array<SrcType> calc_buf_;
         mk2::container::fixed_array<DstType> logical_buf_;
         mk2::container::fixed_array<DstType> minimul_;
     };

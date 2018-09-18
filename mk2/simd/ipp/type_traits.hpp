@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include <type_traits>
+#include <ipps.h>
+
 namespace mk2 { namespace simd { namespace ipp {
 
     namespace detail
