@@ -15,6 +15,13 @@
 
 namespace mk2 { namespace simd { namespace ipp {
     
+    enum class extremum_type
+    {
+        kExtremum,
+        kMaximal,
+        kMinimal,
+    };
+    
     template<class SrcType, class IndexType = Ipp8u>
     class extremum_index
     {
@@ -25,7 +32,7 @@ namespace mk2 { namespace simd { namespace ipp {
             logical_buf_(size_ - 1)
         {}
         
-        void operator()(const SrcType* src, IndexType *dst)
+        void operator()(const SrcType* src, IndexType *dst, extremum_type type = extremum_type::kExtremum)
         {
             auto round_type = std::fegetround();
             
@@ -38,12 +45,26 @@ namespace mk2 { namespace simd { namespace ipp {
             function::ipps_ceil(dif_buf_.data(), dif_buf_.data(), static_cast<int>(dif_buf_.size()));
             // to logical(with -v -> 0)
             function::ipps_convert_f2i(calc_buf_.data(), logical_buf_.data(), static_cast<int>(logical_buf_.size()));
-            
-            // maximul
+
+            std::fesetround(round_type);
+
+            // extremum detection
             function::ipps_xor(logical_buf_.data(), logical_buf_.data() + 1, dst + 1, size_ - 2);
             dst[0] = dst[size_ - 1] = 0;
 
-            std::fesetround(round_type);
+            switch(type)
+            {
+                extremum_type::kExtremum:
+                    break;
+                
+                extremum_type::kMaximal:
+                    function::ipps_and_inplace(logical_buf_.data(), dst + 1, static_cast<int>(logical_buf_.size()));
+                    break;
+                
+                extremum_type::kMinimal:
+                    function::ipps_and_inplace(logical_buf_.data(), dst, static_cast<int>(logical_buf_.size()));
+                    break;
+            }
         }
         
     private:
