@@ -21,7 +21,6 @@ namespace mk2 { namespace simd { namespace ipp
         }
     }
 
-
     template<class Type>
     class ring_buffer
     {
@@ -29,6 +28,8 @@ namespace mk2 { namespace simd { namespace ipp
         using size_type = typename mk2::container::container_traits<container_type>::size_type;
         
     public:
+        ring_buffer(size_type size) : size_(size), index_(0), container_(size) {}
+
         ring_buffer(size_type size, Type v) : size_(size), index_(0), container_(size, v) {}
         
         void set_sample(const Type* sample, size_t len)
@@ -54,7 +55,7 @@ namespace mk2 { namespace simd { namespace ipp
         }
         
         // OperationFunc: f(Type bufptr, size index, int len, args...)
-        template<class OperationFunc, class Args...>
+        template<class OperationFunc, class ...Args>
         void operation(OperationFunc&& f, size_t len, Args&&... args)
         {
             auto data = container_.data();
@@ -85,6 +86,11 @@ namespace mk2 { namespace simd { namespace ipp
                 function::ipps_copy(data + index_, dst, static_cast<int>(section_size));
                 function::ipps_copy(data, dst + section_size, static_cast<int>(size - section_size));
             }
+        }
+
+        void seek(size_t size)
+        {
+            index_ = (index_ + size) % size_;
         }
     
         auto size() const {return size_;}

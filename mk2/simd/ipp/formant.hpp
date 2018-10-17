@@ -54,14 +54,14 @@ namespace mk2 { namespace simd { namespace ipp {
 
             switch(type)
             {
-                extremum_type::kExtremum:
+                case extremum_type::kExtremum:
                     break;
                 
-                extremum_type::kMaximal:
+                case extremum_type::kMaximal:
                     function::ipps_and_inplace(logical_buf_.data(), dst + 1, static_cast<int>(logical_buf_.size()));
                     break;
                 
-                extremum_type::kMinimal:
+                case extremum_type::kMinimal:
                     function::ipps_and_inplace(logical_buf_.data(), dst, static_cast<int>(logical_buf_.size()));
                     break;
             }
