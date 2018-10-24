@@ -26,8 +26,8 @@ namespace mk2 { namespace simd { namespace ipp {
     class extremum_index
     {
     public:
-        formant(int size) :
-            size_(size),
+        extremum_index(size_t size) :
+            size_((int)size),
             dif_buf_(size_ - 1),
             logical_buf_(size_ - 1)
         {}
@@ -44,7 +44,7 @@ namespace mk2 { namespace simd { namespace ipp {
             //function::ipps_addc_inplace(static_cast<SrcType>(0.5), dif_buf_.data(), static_cast<int>(dif_buf_.size()));
             function::ipps_ceil(dif_buf_.data(), dif_buf_.data(), static_cast<int>(dif_buf_.size()));
             // to logical(with -v -> 0)
-            function::ipps_convert_f2i(calc_buf_.data(), logical_buf_.data(), static_cast<int>(logical_buf_.size()));
+            function::ipps_convert_f2i(dif_buf_.data(), logical_buf_.data(), static_cast<int>(logical_buf_.size()));
 
             std::fesetround(round_type);
 

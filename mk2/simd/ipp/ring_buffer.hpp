@@ -28,7 +28,7 @@ namespace mk2 { namespace simd { namespace ipp
         using size_type = typename mk2::container::container_traits<container_type>::size_type;
         
     public:
-        ring_buffer(size_type size) : size_(size), index_(0), container_(size) {}
+        explicit ring_buffer(size_type size) : size_(size), index_(0), container_(size) {}
 
         ring_buffer(size_type size, Type v) : size_(size), index_(0), container_(size, v) {}
         
@@ -71,7 +71,7 @@ namespace mk2 { namespace simd { namespace ipp
             }
         }
         
-        decltype(auto) data(){ return container_.data(); }
+        decltype(auto) data() const { return container_.data(); }
         
         void copy_aligned_data(Type* dst, size_type size)
         {
@@ -93,7 +93,7 @@ namespace mk2 { namespace simd { namespace ipp
             index_ = (index_ + size) % size_;
         }
     
-        auto size() const {return size_;}
+        auto size() const { return size_; }
         
     private:
         const std::size_t size_;
