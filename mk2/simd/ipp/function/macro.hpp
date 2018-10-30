@@ -41,7 +41,5 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     }                                                                                                               \
     template<IPP_ADD_CLASS(__VA_ARGS__)> inline IppStatus func_name(IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE)    \
     { return detail::func_name##_impl<__VA_ARGS__>::func(IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS); }
-}
-}
-}
-}
+
+}}}}

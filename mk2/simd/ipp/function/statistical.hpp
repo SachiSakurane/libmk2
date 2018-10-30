@@ -28,8 +28,8 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
     #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
     
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
-    
+    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATORz
+
     
     #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor)                            \
     IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f##descriptor, Ipp32f, Ipp32f, Ipp32f)            \
