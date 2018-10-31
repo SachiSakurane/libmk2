@@ -7,7 +7,7 @@
 #include <traits>
 
 namespace mk2 { namespace simd { namespace intrin {
-    template<Bool B> struct is_align<B>
+    template<Bool B> struct is_aligned<B>
     {
         static constexpr bool value = B;
     }
