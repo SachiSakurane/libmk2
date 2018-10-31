@@ -27,6 +27,7 @@ namespace mk2 { namespace simd { namespace intrin { namespace function {
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm512_##base_func##u_pd, (m512, double, mk2::simd::intrin::is_aligned<false>))
 
     MK2_PP_REPLACE_TO_TEMPLATE(load, load, (const Type* mem_addr), (mem_addr), (RegisterType, Type, IsAligned))
+    MK2_PP_REPLACE_TO_TEMPLATE(store, store, (Type* mem_addr, RegisterType r), (mem_addr, r), (RegisterType, Type, IsAligned))
 
     #undef MK2_PP_REPLACE_TO_TEMPLATE_ASSOCIATOR
 
