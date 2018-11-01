@@ -4,12 +4,12 @@
 
 #pragma once
 
-#include <traits>
-
 namespace mk2 { namespace simd { namespace intrin {
-    template<Bool B> struct is_aligned<B>
+    template<bool B> struct is_aligned
     {
         static constexpr bool value = B;
-    }
-    
+    };
+
+    using aligned       = is_aligned<true>;
+    using not_aligned   = is_aligned<false>;
 }}}

@@ -4,10 +4,12 @@
 
 #pragma once
 
+#include <mk2/iterator/data.hpp>
+#include <mk2/iterator/index_iterator.hpp>
 #include <mk2/simd/intrin/include.hpp>
-#include <mk2/simd/intrin/mm_type.hpp>
+#include <mk2/simd/intrin/type_traits/bit_type.hpp>
 #include <mk2/simd/intrin/wrapper/assignment.hpp>
-#include <mk2/simd/intrin/wrapper/setzero.hpp>
+#include <mk2/simd/intrin/wrapper/set.hpp>
 
 namespace mk2 { namespace simd { namespace intrin
 {
@@ -16,9 +18,9 @@ namespace mk2 { namespace simd { namespace intrin
     template <class Type, class Bits, size_t Size, class Align = mk2::simd::intrin::is_aligned<false>>
     class mm_array
     {
-        using mm_type = mk2::simd::intrin::mm_type<Type, Bits>::type;
-        constexpr std::size_t mm_contain_size = sizeof(mm_type) / sizeof(Type);
-        constexpr std::size_t mm_elems_size = Size / mm_contain_size;
+        using mm_type = typename mk2::simd::intrin::bit_type<Type, Bits>::type;
+        static constexpr std::size_t mm_contain_size = sizeof(mm_type) / sizeof(Type);
+        static constexpr std::size_t mm_elems_size = Size / mm_contain_size;
 
     public:
         using value_type = Type;
@@ -32,7 +34,7 @@ namespace mk2 { namespace simd { namespace intrin
         using difference_type = std::ptrdiff_t;
         using reverse_iterator = std::reverse_iterator<iterator>;
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
-        using allocator_type = Allocator;
+        //using allocator_type = Allocator;
     
         // constructors
         mm_array();
@@ -58,9 +60,9 @@ namespace mk2 { namespace simd { namespace intrin
 
         const_iterator begin() const noexcept { return const_iterator(*this, 0); }
 
-        iterator end() noexcept { return iterator(*this, size_); }
+        iterator end() noexcept { return iterator(*this, Size); }
 
-        const_iterator end() const noexcept { return const_iterator(*this, size_); }
+        const_iterator end() const noexcept { return const_iterator(*this, Size); }
 
         reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
 
@@ -84,10 +86,10 @@ namespace mk2 { namespace simd { namespace intrin
         const_reference operator[](size_t n) const noexcept { return elems_[n / mm_elems_size][n % mm_contain_size]; }
 
         reference at(size_t n)
-        { return n < size_ ? (*this)[n] : throw std::out_of_range("fixed_array::at");}
+        { return n < Size ? (*this)[n] : throw std::out_of_range("fixed_array::at"); }
 
         const_reference at(size_t n) const
-        { return n < size_ ? (*this)[n] : throw std::out_of_range("fixed_array::at"); }
+        { return n < Size ? (*this)[n] : throw std::out_of_range("fixed_array::at"); }
         
         reference front() noexcept { return (*this)[0]; }
         const_reference front() const noexcept { return (*this)[0]; }
@@ -114,7 +116,7 @@ namespace mk2 { namespace simd { namespace intrin
         template <class Container>
         void store(const Container& c);
         void store(pointer p);
-        void fill(Type value);
+        void fill(value_type value);
         void swap() noexcept(std::is_nothrow_swappable<mm_type>::value);
         
     private:
@@ -131,7 +133,7 @@ namespace mk2 { namespace simd { namespace intrin
     
     template <class Type, class Bits, size_t Size, class Align>
     template <class Container>
-    mm_array<Type, Bits, Size, Align>::mm_array(const Container& c) : mm_array{ c.data() }
+    mm_array<Type, Bits, Size, Align>::mm_array(const Container& c) : mm_array(c.data())
     {
         static_assert(c.size() >= Size);
     }
@@ -143,7 +145,7 @@ namespace mk2 { namespace simd { namespace intrin
     template <class Type, class Bits, size_t Size, class Align>
     template<size_t... Indices>
     mm_array<Type, Bits, Size, Align>::mm_array(const Type* data, std::index_sequence<Indices...>)
-        : elems_{mk2::simd::intrin::function::load<Bits, Align>(data + Indices * mm_contain_size)...}
+        : elems_{ mk2::simd::intrin::function::load<Bits, Align>(data + Indices * mm_contain_size)... }
     {}
     
     // assignment operator
@@ -156,11 +158,43 @@ namespace mk2 { namespace simd { namespace intrin
     
     // operation
     template <class Type, class Bits, size_t Size, class Align>
-    void mm_array<Type, Bits, Size, Align>::store(typename mm_array<Type, Bits, Size, Align>::pointer obj)
+    template <class Container>
+    void mm_array<Type, Bits, Size, Align>::load(const Container& c)
+    {
+        this->load(mk2::iterator::data(c));
+    }
+
+    template <class Type, class Bits, size_t Size, class Align>
+    void mm_array<Type, Bits, Size, Align>::load(typename mm_array<Type, Bits, Size, Align>::pointer p)
     {
         for (std::size_t i = 0; i < mm_elems_size; i++)
         {
-            mk2::simd::intrin::function::store<Align>(lhv + i * mm_contain_size, elems_ + i);
+            elems_[i] = mk2::simd::intrin::function::load<Bits, Align>(p + i * mm_contain_size);
+        }
+    }
+
+    template <class Type, class Bits, size_t Size, class Align>
+    template <class Container>
+    void mm_array<Type, Bits, Size, Align>::store(const Container& c)
+    {
+        this->store(mk2::iterator::data(c));
+    }
+
+    template <class Type, class Bits, size_t Size, class Align>
+    void mm_array<Type, Bits, Size, Align>::store(typename mm_array<Type, Bits, Size, Align>::pointer p)
+    {
+        for (std::size_t i = 0; i < mm_elems_size; i++)
+        {
+            mk2::simd::intrin::function::store<Align>(p + i * mm_contain_size, elems_ + i);
+        }
+    }
+
+    template <class Type, class Bits, size_t Size, class Align>
+    void mm_array<Type, Bits, Size, Align>::fill(Type value)
+    {
+        for (std::size_t i = 0; i < mm_elems_size; i++)
+        {
+            elems_[i] = mk2::simd::intrin::function::set1<Bits>(value);
         }
     }
     

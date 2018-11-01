@@ -12,67 +12,67 @@ namespace mk2 { namespace simd { namespace intrin {
     struct m256{};
     struct m512{};
 
-    template <class Type, class Register>
-    struct mm_type {};
+    template <class Type, class Bit>
+    struct bit_type {};
 
     template <>
-    struct mm_type<float, m128>
+    struct bit_type<float, m128>
     {
         size_t size = sizeof(__m128);
         typedef __m128 type;
     };
 
     template <>
-    struct mm_type<float, m256>
+    struct bit_type<float, m256>
     {
         size_t size = sizeof(__m256);
         typedef __m256 type;
     };
 
     template <>
-    struct mm_type<float, m512>
+    struct bit_type<float, m512>
     {
         size_t size = sizeof(__m512);
         typedef __m512 type;
     };
 
     template <>
-    struct mm_type<double, m128>
+    struct bit_type<double, m128>
     {
         size_t size = sizeof(__m128d);
         typedef __m128d type;
     };
 
     template <>
-    struct mm_type<double, m256>
+    struct bit_type<double, m256>
     {
         size_t size = sizeof(__m256d);
         typedef __m256d type;
     };
 
     template <>
-    struct mm_type<double, m512>
+    struct bit_type<double, m512>
     {
         size_t size = sizeof(__m512d);
         typedef __m512d type;
     };
 
     template <>
-    struct mm_type<int, m128>
+    struct bit_type<int, m128>
     {
         size_t size = sizeof(__m128i);
         typedef __m128i type;
     };
 
     template <>
-    struct mm_type<int, m256>
+    struct bit_type<int, m256>
     {
         size_t size = sizeof(__m256i);
         typedef __m256i type;
     };
 
     template <>
-    struct mm_type<int, m512>
+    struct bit_type<int, m512>
     {
         size_t size = sizeof(__m512i);
         typedef __m512i type;
