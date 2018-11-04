@@ -77,4 +77,5 @@ namespace mk2 { namespace simd { namespace intrin {
         size_t size = sizeof(__m512i);
         typedef __m512i type;
     };
+
 }}}

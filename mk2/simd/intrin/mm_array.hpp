@@ -7,9 +7,12 @@
 #include <mk2/iterator/data.hpp>
 #include <mk2/iterator/index_iterator.hpp>
 #include <mk2/simd/intrin/include.hpp>
+#include <mk2/simd/intrin/function/assignment.hpp>
+#include <mk2/simd/intrin/function/comparison.hpp>
+#include <mk2/simd/intrin/function/logical.hpp>
+#include <mk2/simd/intrin/function/set.hpp>
+#include <mk2/simd/intrin/function/swap.hpp>
 #include <mk2/simd/intrin/type_traits/bit_type.hpp>
-#include <mk2/simd/intrin/wrapper/assignment.hpp>
-#include <mk2/simd/intrin/wrapper/set.hpp>
 
 namespace mk2 { namespace simd { namespace intrin
 {
@@ -18,11 +21,11 @@ namespace mk2 { namespace simd { namespace intrin
     template <class Type, class Bits, size_t Size, class Align = mk2::simd::intrin::is_aligned<false>>
     class mm_array
     {
+    public:
         using mm_type = typename mk2::simd::intrin::bit_type<Type, Bits>::type;
         static constexpr std::size_t mm_contain_size = sizeof(mm_type) / sizeof(Type);
         static constexpr std::size_t mm_elems_size = Size / mm_contain_size;
 
-    public:
         using value_type = Type;
         using reference = value_type&;
         using const_reference = const value_type&;
@@ -117,7 +120,7 @@ namespace mk2 { namespace simd { namespace intrin
         void store(const Container& c);
         void store(pointer p);
         void fill(value_type value);
-        void swap() noexcept(std::is_nothrow_swappable<mm_type>::value);
+        void swap(mm_array& other) noexcept(std::is_nothrow_swappable<mm_type>::value);
         
     private:
         template<size_t... Indices>
@@ -197,7 +200,39 @@ namespace mk2 { namespace simd { namespace intrin
             elems_[i] = mk2::simd::intrin::function::set1<Bits>(value);
         }
     }
+
+    template <class Type, class Bits, size_t Size, class Align>
+    void mm_array<Type, Bits, Size, Align>::swap(mm_array<Type, Bits, Size, Align>& other)
+        noexcept(std::is_nothrow_swappable<mm_array<Type, Bits, Size, Align>::mm_type>::value)
+    {
+        for (std::size_t i = 0; i < mm_elems_size; i++)
+        {
+            mk2::simd::intrin::function::swap(elems_[i], other.mm_data()[i]);
+        }
+    }
     
     // operator
-    
+    template <class Type, class Bits, size_t Size, class Align>
+            inline bool operator==(const mm_array<Type, Bits, Size, Align>& x, const mm_array<Type, Bits, Size, Align>& y)
+            {
+                decltype(auto) mm_x = x.mm_data();
+                decltype(auto) mm_y = y.mm_data();
+                const auto zero = mk2::simd::intrin::function::setzero<mm_array<Type, Bits, Size, Align>::mm_type>();
+
+                for (std::size_t i = 0; i < mm_array<Type, Bits, Size, Align>::mm_elems_size; i++)
+                {
+                    if (mk2::simd::intrin::function::bit_testc(zero, mk2::simd::intrin::function::cmp_neq(mm_x, mm_y)))
+                        return false;
+                }
+                return true;
+            }
+
+    template <class Type, class Bits, size_t Size, class Align>
+    inline bool operator!=(const mm_array<Type, Bits, Size, Align>& x, const mm_array<Type, Bits, Size, Align>& y)
+    {
+        return !operator==(x, y);
+    }
+
+
+
 }}}
