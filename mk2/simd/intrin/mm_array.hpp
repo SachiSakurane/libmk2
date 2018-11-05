@@ -7,6 +7,7 @@
 #include <mk2/iterator/data.hpp>
 #include <mk2/iterator/index_iterator.hpp>
 #include <mk2/simd/intrin/include.hpp>
+#include <mk2/simd/intrin/function/arithmetic.hpp>
 #include <mk2/simd/intrin/function/assignment.hpp>
 #include <mk2/simd/intrin/function/comparison.hpp>
 #include <mk2/simd/intrin/function/logical.hpp>
@@ -47,7 +48,8 @@ namespace mk2 { namespace simd { namespace intrin
 
         template <class Container>
         explicit mm_array(const Container& c);
-        explicit mm_array(const value_type* data);
+        explicit mm_array(const_pointer data);
+        explicit mm_array(mm_type* mm_data);
 
         // destructor
         virtual ~mm_array() = default;
@@ -55,8 +57,6 @@ namespace mk2 { namespace simd { namespace intrin
         // assignment operator
         mm_array& operator=(const mm_array& ) = default;
         mm_array& operator=(mm_array&& )noexcept = default;
-        
-        pointer operator=(pointer lhv);
         
         // iterator
         iterator begin() noexcept { return iterator(*this, 0); }
@@ -84,9 +84,9 @@ namespace mk2 { namespace simd { namespace intrin
         const_reverse_iterator crend() const noexcept { return rend(); }
 
         // access
-        reference operator[](size_t n) noexcept { return elems_[n / mm_elems_size][n % mm_contain_size]; }
+        reference operator[](size_t n) noexcept { return data()[n]; }
 
-        const_reference operator[](size_t n) const noexcept { return elems_[n / mm_elems_size][n % mm_contain_size]; }
+        const_reference operator[](size_t n) const noexcept { return data()[n]; }
 
         reference at(size_t n)
         { return n < Size ? (*this)[n] : throw std::out_of_range("fixed_array::at"); }
@@ -125,39 +125,46 @@ namespace mk2 { namespace simd { namespace intrin
     private:
         template<size_t... Indices>
         mm_array(const Type* data, std::index_sequence<Indices...>);
-    
+
+        template<size_t... Indices>
+        mm_array(mm_type* data, std::index_sequence<Indices...>);
+
         mm_type elems_[mm_elems_size];
     };
     
     // constructors
     template <class Type, class Bits, size_t Size, class Align>
-    mm_array<Type, Bits, Size, Align>::mm_array() : elems_{ {mk2::simd::intrin::function::setzero<mm_type>()} }
+    mm_array<Type, Bits, Size, Align>::mm_array() : elems_{ {mk2::simd::intrin::function::setzero<Bits, Type>()} }
     {}
     
     template <class Type, class Bits, size_t Size, class Align>
     template <class Container>
     mm_array<Type, Bits, Size, Align>::mm_array(const Container& c) : mm_array(c.data())
     {
-        static_assert(c.size() >= Size);
+        // static_assert(c.size() >= Size);
     }
     
     template <class Type, class Bits, size_t Size, class Align>
-    mm_array<Type, Bits, Size, Align>::mm_array(const Type* data) : mm_array(data, std::make_index_sequence<Size>())
+    mm_array<Type, Bits, Size, Align>::mm_array(const Type* data)
+            : mm_array(data, std::make_index_sequence<mm_array<Type, Bits, Size, Align>::mm_elems_size>())
     {}
     
     template <class Type, class Bits, size_t Size, class Align>
     template<size_t... Indices>
     mm_array<Type, Bits, Size, Align>::mm_array(const Type* data, std::index_sequence<Indices...>)
-        : elems_{ mk2::simd::intrin::function::load<Bits, Align>(data + Indices * mm_contain_size)... }
+            : elems_{ mk2::simd::intrin::function::load<Bits, Type, Align>(data + Indices * mm_contain_size)... }
     {}
-    
-    // assignment operator
+
     template <class Type, class Bits, size_t Size, class Align>
-    typename mm_array<Type, Bits, Size, Align>::pointer mm_array<Type, Bits, Size, Align>::operator=(typename mm_array<Type, Bits, Size, Align>::pointer lhv)
-    {
-        this->store(lhv);
-        return lhv;
-    }
+    mm_array<Type, Bits, Size, Align>::mm_array(typename mm_array<Type, Bits, Size, Align>::mm_type* data)
+            : mm_array(data, std::make_index_sequence<mm_array<Type, Bits, Size, Align>::mm_elems_size>())
+    {}
+
+    template <class Type, class Bits, size_t Size, class Align>
+    template<size_t... Indices>
+    mm_array<Type, Bits, Size, Align>::mm_array(typename mm_array<Type, Bits, Size, Align>::mm_type* data, std::index_sequence<Indices...>)
+            : elems_{ data[Indices]... }
+    {}
     
     // operation
     template <class Type, class Bits, size_t Size, class Align>
@@ -197,7 +204,7 @@ namespace mk2 { namespace simd { namespace intrin
     {
         for (std::size_t i = 0; i < mm_elems_size; i++)
         {
-            elems_[i] = mk2::simd::intrin::function::set1<Bits>(value);
+            elems_[i] = mk2::simd::intrin::function::set1<mm_type>(value);
         }
     }
 
@@ -211,21 +218,21 @@ namespace mk2 { namespace simd { namespace intrin
         }
     }
     
-    // operator
+    // comparison operator
     template <class Type, class Bits, size_t Size, class Align>
-            inline bool operator==(const mm_array<Type, Bits, Size, Align>& x, const mm_array<Type, Bits, Size, Align>& y)
-            {
-                decltype(auto) mm_x = x.mm_data();
-                decltype(auto) mm_y = y.mm_data();
-                const auto zero = mk2::simd::intrin::function::setzero<mm_array<Type, Bits, Size, Align>::mm_type>();
+    inline bool operator==(const mm_array<Type, Bits, Size, Align>& x, const mm_array<Type, Bits, Size, Align>& y)
+    {
+        decltype(auto) mm_x = x.mm_data();
+        decltype(auto) mm_y = y.mm_data();
+        const auto zero = mk2::simd::intrin::function::setzero<mm_array<Type, Bits, Size, Align>::mm_type>();
 
-                for (std::size_t i = 0; i < mm_array<Type, Bits, Size, Align>::mm_elems_size; i++)
-                {
-                    if (mk2::simd::intrin::function::bit_testc(zero, mk2::simd::intrin::function::cmp_neq(mm_x, mm_y)))
-                        return false;
-                }
-                return true;
-            }
+        for (std::size_t i = 0; i < mm_array<Type, Bits, Size, Align>::mm_elems_size; i++)
+        {
+            if (mk2::simd::intrin::function::testc(zero, mk2::simd::intrin::function::cmp_neq(mm_x, mm_y)))
+                return false;
+        }
+        return true;
+    }
 
     template <class Type, class Bits, size_t Size, class Align>
     inline bool operator!=(const mm_array<Type, Bits, Size, Align>& x, const mm_array<Type, Bits, Size, Align>& y)
@@ -233,6 +240,105 @@ namespace mk2 { namespace simd { namespace intrin
         return !operator==(x, y);
     }
 
+    template <class Type, class Bits, size_t Size, class Align>
+    inline bool operator<(const mm_array<Type, Bits, Size, Align>& x, const mm_array<Type, Bits, Size, Align>& y)
+    {
+        decltype(auto) mm_x = x.mm_data();
+        decltype(auto) mm_y = y.mm_data();
+        const auto zero = mk2::simd::intrin::function::setzero<mm_array<Type, Bits, Size, Align>::mm_type>();
 
+        for (std::size_t i = 0; i < mm_array<Type, Bits, Size, Align>::mm_elems_size; i++)
+        {
+            if (mk2::simd::intrin::function::testc(zero, mk2::simd::intrin::function::cmp_nlt(mm_x, mm_y)))
+                return false;
+        }
+        return true;
+    }
+
+    template <class Type, class Bits, size_t Size, class Align>
+    inline bool operator<=(const mm_array<Type, Bits, Size, Align>& x, const mm_array<Type, Bits, Size, Align>& y)
+    {
+        decltype(auto) mm_x = x.mm_data();
+        decltype(auto) mm_y = y.mm_data();
+        const auto zero = mk2::simd::intrin::function::setzero<mm_array<Type, Bits, Size, Align>::mm_type>();
+
+        for (std::size_t i = 0; i < mm_array<Type, Bits, Size, Align>::mm_elems_size; i++)
+        {
+            if (mk2::simd::intrin::function::testc(zero, mk2::simd::intrin::function::cmp_nle(mm_x, mm_y)))
+                return false;
+        }
+        return true;
+    }
+
+    template <class Type, class Bits, size_t Size, class Align>
+    inline bool operator>(const mm_array<Type, Bits, Size, Align>& x, const mm_array<Type, Bits, Size, Align>& y)
+    {
+        return !operator<=(x, y);
+    } 
+
+    template <class Type, class Bits, size_t Size, class Align>
+    inline bool operator>=(const mm_array<Type, Bits, Size, Align>& x, const mm_array<Type, Bits, Size, Align>& y)
+    {
+        return !operator<(x, y);
+    }
+
+    // arithmetic operator
+    // 1024以下の場合に特化している
+#define MK2_INTRIN_MM_ARRAY_ARITHMETIC_OPERATOR_TEMPLETE(op, op_name)               \
+    template <class Type, class Bits, size_t Size, class Align>                     \
+    inline mm_array<Type, Bits, Size, Align> operator op(                           \
+            const mm_array<Type, Bits, Size, Align>& lhv,                           \
+            const mm_array<Type, Bits, Size, Align>& rhv)                           \
+    {                                                                               \
+        constexpr size_t size = mm_array<Type, Bits, Size, Align>::mm_elems_size;   \
+        decltype(auto) mlhv = lhv.mm_data();                                        \
+        decltype(auto) mrhv = rhv.mm_data();                                        \
+        using mm_type = typename mm_array<Type, Bits, Size, Align>::mm_type;        \
+        mm_type container[size];                                                    \
+        for (std::size_t i = 0; i < size; i++)                                      \
+        {                                                                           \
+            container[i] = mk2::simd::intrin::function::op_name(mlhv[i], mrhv[i]);  \
+        }                                                                           \
+        return mm_array<Type, Bits, Size, Align>(container);                        \
+    }                                                                               \
+    template <class Type, class Bits, size_t Size, class Align>                     \
+    inline mm_array<Type, Bits, Size, Align> operator op(                           \
+            const Type lhv,                                                         \
+            const mm_array<Type, Bits, Size, Align>& rhv)                           \
+    {                                                                               \
+        constexpr size_t size = mm_array<Type, Bits, Size, Align>::mm_elems_size;   \
+        using mm_type = typename mm_array<Type, Bits, Size, Align>::mm_type;        \
+        decltype(auto) mlhv = mk2::simd::intrin::function::set1<Bits>(lhv);         \
+        decltype(auto) mrhv = rhv.mm_data();                                        \
+        mm_type container[size];                                                    \
+        for (std::size_t i = 0; i < size; i++)                                      \
+        {                                                                           \
+            container[i] = mk2::simd::intrin::function::op_name(mlhv, mrhv[i]);     \
+        }                                                                           \
+        return mm_array<Type, Bits, Size, Align>(container);                        \
+    }                                                                               \
+    template <class Type, class Bits, size_t Size, class Align>                     \
+    inline mm_array<Type, Bits, Size, Align> operator op(                           \
+            const mm_array<Type, Bits, Size, Align>& lhv,                           \
+            const Type rhv)                                                         \
+    {                                                                               \
+        constexpr size_t size = mm_array<Type, Bits, Size, Align>::mm_elems_size;   \
+        using mm_type = typename mm_array<Type, Bits, Size, Align>::mm_type;        \
+        decltype(auto) mlhv = lhv.mm_data();                                        \
+        decltype(auto) mrhv = mk2::simd::intrin::function::set1<Bits>(rhv);         \
+        mm_type container[size];                                                    \
+        for (std::size_t i = 0; i < size; i++)                                      \
+        {                                                                           \
+            container[i] = mk2::simd::intrin::function::op_name(mlhv[i], mrhv);     \
+        }                                                                           \
+        return mm_array<Type, Bits, Size, Align>(container);                        \
+    }
+
+    MK2_INTRIN_MM_ARRAY_ARITHMETIC_OPERATOR_TEMPLETE(+, add)
+    MK2_INTRIN_MM_ARRAY_ARITHMETIC_OPERATOR_TEMPLETE(-, sub)
+    MK2_INTRIN_MM_ARRAY_ARITHMETIC_OPERATOR_TEMPLETE(*, mul)
+    MK2_INTRIN_MM_ARRAY_ARITHMETIC_OPERATOR_TEMPLETE(/, div)
+
+#undef MK2_INTRIN_MM_ARRAY_ARITHMETIC_OPERATOR_TEMPLETE
 
 }}}

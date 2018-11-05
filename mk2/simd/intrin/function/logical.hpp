@@ -49,11 +49,11 @@ namespace function {
         };
 
         template <class Type>
-        struct bit_testc
+        struct testc
         {
             static decltype(auto) func(Type a, Type b, mk2::simd::intrin::arch_sse)
             {
-                return mk2::simd::intrin::wrapper::intel::bit_testc(a, b);
+                return mk2::simd::intrin::wrapper::intel::testc(a, b);
             }
 
             [[deprecated("float only")]]
@@ -63,17 +63,17 @@ namespace function {
                 const auto b_lo = _mm512_castps512_ps256(b);
                 const auto a_hi = _mm512_extractf32x8_ps(a, _MM_SHUFFLE2(0, 1));
                 const auto b_hi = _mm512_extractf32x8_ps(b, _MM_SHUFFLE2(0, 1));
-                return mk2::simd::intrin::wrapper::intel::bit_testc(a_hi, b_hi) |
-                       mk2::simd::intrin::wrapper::intel::bit_testc(a_lo, b_lo);
+                return mk2::simd::intrin::wrapper::intel::testc(a_hi, b_hi) |
+                       mk2::simd::intrin::wrapper::intel::testc(a_lo, b_lo);
             }
         };
 
         template <class Type>
-        struct bit_testz
+        struct testz
         {
             static decltype(auto) func(Type a, Type b, mk2::simd::intrin::arch_sse)
             {
-                return mk2::simd::intrin::wrapper::intel::bit_testz(a, b);
+                return mk2::simd::intrin::wrapper::intel::testz(a, b);
             }
 
             [[deprecated("float only")]]
@@ -83,8 +83,8 @@ namespace function {
                 const auto b_lo = _mm512_castps512_ps256(b);
                 const auto a_hi = _mm512_extractf32x8_ps(a, _MM_SHUFFLE2(0, 1));
                 const auto b_hi = _mm512_extractf32x8_ps(b, _MM_SHUFFLE2(0, 1));
-                return mk2::simd::intrin::wrapper::intel::bit_testz(a_hi, b_hi) |
-                       mk2::simd::intrin::wrapper::intel::bit_testz(a_lo, b_lo);
+                return mk2::simd::intrin::wrapper::intel::testz(a_hi, b_hi) |
+                       mk2::simd::intrin::wrapper::intel::testz(a_lo, b_lo);
             }
         };
     }
@@ -114,15 +114,15 @@ namespace function {
     }
 
     template <class Type>
-    inline decltype(auto) bit_testc(Type a, Type b)
+    inline decltype(auto) testc(Type a, Type b)
     {
-        return detail::bit_testc<Type>::func(a, b, mk2::simd::intrin::available_architecture);
+        return detail::testc<Type>::func(a, b, mk2::simd::intrin::available_architecture);
     }
 
     template <class Type>
-    inline decltype(auto) bit_testz(Type a, Type b)
+    inline decltype(auto) testz(Type a, Type b)
     {
-        return detail::bit_testz<Type>::func(a, b, mk2::simd::intrin::available_architecture);
+        return detail::testz<Type>::func(a, b, mk2::simd::intrin::available_architecture);
     }
 
 }}}}

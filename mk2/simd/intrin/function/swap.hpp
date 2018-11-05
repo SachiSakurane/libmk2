@@ -5,7 +5,7 @@
 #pragma once
 
 #include <mk2/simd/intrin/type_traits/architecture.hpp>
-#include <mk2/simd/intrin/wrapper/function/logical.hpp>
+#include <mk2/simd/intrin/function/logical.hpp>
 
 namespace mk2 { namespace simd { namespace intrin { namespace function {
 

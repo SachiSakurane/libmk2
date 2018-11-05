@@ -20,10 +20,10 @@ namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespac
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm512_##base_func##_pd,    (__m512d)) \
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm512_##base_func##_si512, (__m512i))
 
-    MK2_PP_REPLACE_TO_TEMPLATE(bit_and, and, (Type a, Type b), (a, b), (Type))
+    MK2_PP_REPLACE_TO_TEMPLATE(bit_and,    and,    (Type a, Type b), (a, b), (Type))
     MK2_PP_REPLACE_TO_TEMPLATE(bit_andnot, andnot, (Type a, Type b), (a, b), (Type))
-    MK2_PP_REPLACE_TO_TEMPLATE(bit_or, or, (Type a, Type b), (a, b), (Type))
-    MK2_PP_REPLACE_TO_TEMPLATE(bit_xor, xor, (Type a, Type b), (a, b), (Type))
+    MK2_PP_REPLACE_TO_TEMPLATE(bit_or,     or,     (Type a, Type b), (a, b), (Type))
+    MK2_PP_REPLACE_TO_TEMPLATE(bit_xor,    xor,    (Type a, Type b), (a, b), (Type))
 
     #undef MK2_PP_REPLACE_TO_TEMPLATE_ASSOCIATOR
 
