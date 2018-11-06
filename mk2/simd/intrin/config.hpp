@@ -19,3 +19,5 @@
 #else
 #   define MK2_IF_AVX512F(x)
 #endif
+
+#define MK2_INTRIN_ALGORITHM_SWITCH_THRESHOLD 1024
