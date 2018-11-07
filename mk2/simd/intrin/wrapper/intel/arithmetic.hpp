@@ -14,7 +14,7 @@ namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespac
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_ps,       (__m128))) \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_pd,       (__m128d)))\
     MK2_ARCHTECTURE_REQUIREMENT_AVX(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm256_##base_func##_ps,    (__m256))) \
-	MK2_ARCHTECTURE_REQUIREMENT_AVX(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm256_##base_func##_pd,    (__m256d)))\
+    MK2_ARCHTECTURE_REQUIREMENT_AVX(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm256_##base_func##_pd,    (__m256d)))\
     MK2_ARCHTECTURE_REQUIREMENT_AVX512F(MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm512_##base_func##_ps,    (__m512))) \
     MK2_ARCHTECTURE_REQUIREMENT_AVX512F(MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm512_##base_func##_pd,    (__m512d)))
 
