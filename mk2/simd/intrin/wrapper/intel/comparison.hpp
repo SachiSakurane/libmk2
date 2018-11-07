@@ -6,6 +6,7 @@
 
 #include <mk2/preprocessor/template_wrapper.hpp>
 #include <mk2/simd/intrin/include.hpp>
+#include <mk2/simd/intrin/utility/archtecture_requirement.hpp>
 
 namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespace intel {
 
@@ -38,10 +39,10 @@ namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespac
         template<class Type, bool Ordered, bool Signaling> struct cmp_nlt_impl{};
         template<class Type, bool Ordered, bool Signaling> struct cmp_nle_impl{};
 
-        MK2_INTEL_INTRIN_COMPARISON_FUNC_TEMPLATE_FUNCS(__m128,  _mm_cmp_ps)
-        MK2_INTEL_INTRIN_COMPARISON_FUNC_TEMPLATE_FUNCS(__m128d, _mm_cmp_pd)
-        MK2_INTEL_INTRIN_COMPARISON_FUNC_TEMPLATE_FUNCS(__m256,  _mm256_cmp_ps)
-        MK2_INTEL_INTRIN_COMPARISON_FUNC_TEMPLATE_FUNCS(__m256d, _mm256_cmp_pd)
+        MK2_ARCHTECTURE_REQUIREMENT_AVX(MK2_INTEL_INTRIN_COMPARISON_FUNC_TEMPLATE_FUNCS(__m128,  _mm_cmp_ps))
+        MK2_ARCHTECTURE_REQUIREMENT_AVX(MK2_INTEL_INTRIN_COMPARISON_FUNC_TEMPLATE_FUNCS(__m128d, _mm_cmp_pd))
+        MK2_ARCHTECTURE_REQUIREMENT_AVX(MK2_INTEL_INTRIN_COMPARISON_FUNC_TEMPLATE_FUNCS(__m256,  _mm256_cmp_ps))
+        MK2_ARCHTECTURE_REQUIREMENT_AVX(MK2_INTEL_INTRIN_COMPARISON_FUNC_TEMPLATE_FUNCS(__m256d, _mm256_cmp_pd))
     }
 
     template<class Type, bool Ordered, bool Signaling>
