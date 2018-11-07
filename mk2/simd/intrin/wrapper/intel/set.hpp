@@ -6,6 +6,7 @@
 
 #include <mk2/preprocessor/template_wrapper.hpp>
 #include <mk2/simd/intrin/include.hpp>
+#include <mk2/simd/intrin/type_traits/bit_type.hpp>
 
 namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespace intel {
 
