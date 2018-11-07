@@ -9,8 +9,8 @@
 #include <mk2/simd/intrin/utility/archtecture_requirement.hpp>
 
 namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespace intel {
-	
-    #define MK2_PP_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func)                                                   \
+
+    #define ARITHMETIC_ASSOCIATOR(base_struct, base_func)                                                                   \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_ps,       (__m128))) \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_pd,       (__m128d)))\
     MK2_ARCHTECTURE_REQUIREMENT_AVX(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm256_##base_func##_ps,    (__m256))) \
@@ -18,24 +18,24 @@ namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespac
     MK2_ARCHTECTURE_REQUIREMENT_AVX512F(MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm512_##base_func##_ps,    (__m512))) \
     MK2_ARCHTECTURE_REQUIREMENT_AVX512F(MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm512_##base_func##_pd,    (__m512d)))
 
-    MK2_PP_REPLACE_TO_TEMPLATE(add, add, (RegisterType a, RegisterType b), (a, b), (RegisterType))
-    MK2_PP_REPLACE_TO_TEMPLATE(sub, sub, (RegisterType a, RegisterType b), (a, b), (RegisterType))
-    MK2_PP_REPLACE_TO_TEMPLATE(div, div, (RegisterType a, RegisterType b), (a, b), (RegisterType))
-    MK2_PP_REPLACE_TO_TEMPLATE(mul, mul, (RegisterType a, RegisterType b), (a, b), (RegisterType))
+    MK2_PP_REPLACE_TO_TEMPLATE(add, add, (RegisterType a, RegisterType b), (a, b), (RegisterType), ARITHMETIC_ASSOCIATOR)
+    MK2_PP_REPLACE_TO_TEMPLATE(sub, sub, (RegisterType a, RegisterType b), (a, b), (RegisterType), ARITHMETIC_ASSOCIATOR)
+    MK2_PP_REPLACE_TO_TEMPLATE(div, div, (RegisterType a, RegisterType b), (a, b), (RegisterType), ARITHMETIC_ASSOCIATOR)
+    MK2_PP_REPLACE_TO_TEMPLATE(mul, mul, (RegisterType a, RegisterType b), (a, b), (RegisterType), ARITHMETIC_ASSOCIATOR)
 
-    #undef MK2_PP_REPLACE_TO_TEMPLATE_ASSOCIATOR
+    #undef ARITHMETIC_ASSOCIATOR
 
-    #define MK2_PP_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func)                                                   \
+    #define ARITHMETIC_S_ASSOCIATOR(base_struct, base_func)                                                                 \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_ss,       (__m128))) \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_sd,       (__m128d)))\
     MK2_ARCHTECTURE_REQUIREMENT_AVX(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm256_##base_func##_ss,    (__m256))) \
     MK2_ARCHTECTURE_REQUIREMENT_AVX(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm256_##base_func##_sd,    (__m256d)))
 
-    MK2_PP_REPLACE_TO_TEMPLATE(add_s, add, (RegisterType a, RegisterType b), (a, b), (RegisterType))
-    MK2_PP_REPLACE_TO_TEMPLATE(sub_s, sub, (RegisterType a, RegisterType b), (a, b), (RegisterType))
-    MK2_PP_REPLACE_TO_TEMPLATE(div_s, div, (RegisterType a, RegisterType b), (a, b), (RegisterType))
-    MK2_PP_REPLACE_TO_TEMPLATE(mul_s, mul, (RegisterType a, RegisterType b), (a, b), (RegisterType))
+    MK2_PP_REPLACE_TO_TEMPLATE(add_s, add, (RegisterType a, RegisterType b), (a, b), (RegisterType), ARITHMETIC_S_ASSOCIATOR)
+    MK2_PP_REPLACE_TO_TEMPLATE(sub_s, sub, (RegisterType a, RegisterType b), (a, b), (RegisterType), ARITHMETIC_S_ASSOCIATOR)
+    MK2_PP_REPLACE_TO_TEMPLATE(div_s, div, (RegisterType a, RegisterType b), (a, b), (RegisterType), ARITHMETIC_S_ASSOCIATOR)
+    MK2_PP_REPLACE_TO_TEMPLATE(mul_s, mul, (RegisterType a, RegisterType b), (a, b), (RegisterType), ARITHMETIC_S_ASSOCIATOR)
 
-    #undef MK2_PP_REPLACE_TO_TEMPLATE_ASSOCIATOR
-	
+    #undef ARITHMETIC_S_ASSOCIATOR
+
 }}}}}
