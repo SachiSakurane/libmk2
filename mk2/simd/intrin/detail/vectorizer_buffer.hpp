@@ -112,7 +112,7 @@ namespace mk2 { namespace simd { namespace intrin
             using vectorizer_type = vectorizer<Bits, Type, Size>;
             return lazy_vectorizer<vectorizer_type, vectorizer_type, Size, lazy_vectorizer_add>(lhv, rhv);
         }*/
-
+        
         // 演算子の一時バッファとして扱うことでバッファ生成を最小化する
         // fmaに変換できるならしたい
         // lazy化したい
@@ -143,8 +143,7 @@ namespace mk2 { namespace simd { namespace intrin
                 vectorizer_buffer<Bits, Type, Size>&& lhv,                              \
                 vectorizer_buffer<Bits, Type, Size>&& rhv)                              \
         {                                                                               \
-            constexpr std::size_t size = vectorizer<Bits, Type, Size>::mm_elems_size;   \  
-            using mm_type = typename vectorizer<Bits, Type, Size>::mm_type;             \
+            constexpr std::size_t size = vectorizer<Bits, Type, Size>::mm_elems_size;   \
             for (std::size_t i = 0; i < size; i++)                                      \
             {                                                                           \
                 lhv[i] = mk2::simd::intrin::function::op_name(lhv[i], rhv[i]);          \
@@ -157,7 +156,6 @@ namespace mk2 { namespace simd { namespace intrin
                 vectorizer_buffer<Bits, Type, Size>&& rhv)                              \
         {                                                                               \
             constexpr std::size_t size = vectorizer<Bits, Type, Size>::mm_elems_size;   \
-            using mm_type = typename vectorizer<Bits, Type, Size>::mm_type;             \
             decltype(auto) scalar = mk2::simd::intrin::function::set1<Bits>(lhv);       \
             for (std::size_t i = 0; i < size; i++)                                      \
             {                                                                           \
@@ -171,7 +169,6 @@ namespace mk2 { namespace simd { namespace intrin
                 const Type rhv)                                                         \
         {                                                                               \
             constexpr std::size_t size = vectorizer<Bits, Type, Size>::mm_elems_size;   \
-            using mm_type = typename vectorizer<Bits, Type, Size>::mm_type;             \
             decltype(auto) scalar = mk2::simd::intrin::function::set1<Bits>(rhv);       \
             for (std::size_t i = 0; i < size; i++)                                      \
             {                                                                           \
@@ -185,7 +182,6 @@ namespace mk2 { namespace simd { namespace intrin
                 const vectorizer<Bits, Type, Size>& rhv)                                \
         {                                                                               \
             constexpr std::size_t size = vectorizer<Bits, Type, Size>::mm_elems_size;   \
-            using mm_type = typename vectorizer<Bits, Type, Size>::mm_type;             \
             decltype(auto) mrhv = rhv.mm_data();                                        \
             for (std::size_t i = 0; i < size; i++)                                      \
             {                                                                           \
@@ -199,7 +195,6 @@ namespace mk2 { namespace simd { namespace intrin
                 vectorizer_buffer<Bits, Type, Size>&& rhv)                              \
         {                                                                               \
             constexpr std::size_t size = vectorizer<Bits, Type, Size>::mm_elems_size;   \
-            using mm_type = typename vectorizer<Bits, Type, Size>::mm_type;             \
             decltype(auto) mlhv = lhv.mm_data();                                        \
             for (std::size_t i = 0; i < size; i++)                                      \
             {                                                                           \
@@ -214,6 +209,7 @@ namespace mk2 { namespace simd { namespace intrin
         MK2_INTRIN_VECTORIZER_BUFFER_ARITHMETIC_OPERATOR_TEMPLETE(/ , div)
 
 #undef MK2_INTRIN_VECTORIZER_BUFFER_ARITHMETIC_OPERATOR_TEMPLETE
+            
     }
     
     // arithmetic operator
@@ -227,7 +223,6 @@ namespace mk2 { namespace simd { namespace intrin
         constexpr std::size_t size = vectorizer<Bits, Type, Size>::mm_elems_size;   \
         decltype(auto) mlhv = lhv.mm_data();                                        \
         decltype(auto) mrhv = rhv.mm_data();                                        \
-        using mm_type = typename vectorizer<Bits, Type, Size>::mm_type;             \
         detail::vectorizer_buffer<Bits, Type, Size> container;                      \
         for (std::size_t i = 0; i < size; i++)                                      \
         {                                                                           \
@@ -241,7 +236,6 @@ namespace mk2 { namespace simd { namespace intrin
             const vectorizer<Bits, Type, Size>& rhv)                                \
     {                                                                               \
         constexpr std::size_t size = vectorizer<Bits, Type, Size>::mm_elems_size;   \
-        using mm_type = typename vectorizer<Bits, Type, Size>::mm_type;             \
         decltype(auto) mlhv = mk2::simd::intrin::function::set1<Bits>(lhv);         \
         decltype(auto) mrhv = rhv.mm_data();                                        \
         detail::vectorizer_buffer<Bits, Type, Size> container;                      \
@@ -257,7 +251,6 @@ namespace mk2 { namespace simd { namespace intrin
             const Type rhv)                                                         \
     {                                                                               \
         constexpr std::size_t size = vectorizer<Bits, Type, Size>::mm_elems_size;   \
-        using mm_type = typename vectorizer<Bits, Type, Size>::mm_type;             \
         decltype(auto) mlhv = lhv.mm_data();                                        \
         decltype(auto) mrhv = mk2::simd::intrin::function::set1<Bits>(rhv);         \
         detail::vectorizer_buffer<Bits, Type, Size> container;                      \
