@@ -9,67 +9,52 @@
 
 namespace mk2 { namespace simd { namespace intrin { namespace function {
 
-    namespace detail
-    {
-        template <class Type>
-        struct add
-        {
-            static decltype(auto) func(Type a, Type b, mk2::simd::intrin::arch_sse)
-            {
-                return mk2::simd::intrin::wrapper::intel::add(a, b);
-            }
-        };
-
-        template <class Type>
-        struct sub
-        {
-            static decltype(auto) func(Type a, Type b, mk2::simd::intrin::arch_sse)
-            {
-                return mk2::simd::intrin::wrapper::intel::sub(a, b);
-            }
-        };
-
-        template <class Type>
-        struct mul
-        {
-            static decltype(auto) func(Type a, Type b, mk2::simd::intrin::arch_sse)
-            {
-                return mk2::simd::intrin::wrapper::intel::mul(a, b);
-            }
-        };
-
-        template <class Type>
-        struct div
-        {
-            static decltype(auto) func(Type a, Type b, mk2::simd::intrin::arch_sse)
-            {
-                return mk2::simd::intrin::wrapper::intel::div(a, b);
-            }
-        };
+#define MK2_ARITHMETIC_FUNCTION_TEMPLETE(name)                                              \
+    namespace detail                                                                        \
+    {                                                                                       \
+        template <class Type> struct name                                                   \
+        {                                                                                   \
+            static decltype(auto) func(Type a, Type b, mk2::simd::intrin::arch_sse)         \
+            {                                                                               \
+                return mk2::simd::intrin::wrapper::intel::name(a, b);                       \
+            }                                                                               \
+        };                                                                                  \
+    }                                                                                       \
+    template <class Type> inline decltype(auto) name(Type a, Type b)                        \
+    {                                                                                       \
+        return detail::name<Type>::func(a, b, mk2::simd::intrin::available_architecture);   \
     }
 
-    template <class Type>
-    inline decltype(auto) add(Type a, Type b)
-    {
-        return detail::add<Type>::func(a, b, mk2::simd::intrin::available_architecture);
+    MK2_ARITHMETIC_FUNCTION_TEMPLETE(add)
+    MK2_ARITHMETIC_FUNCTION_TEMPLETE(sub)
+    MK2_ARITHMETIC_FUNCTION_TEMPLETE(div)
+    MK2_ARITHMETIC_FUNCTION_TEMPLETE(mul)
+
+#undef MK2_ARITHMETIC_FUNCTION_TEMPLETE
+
+#define MK2_ARITHMETIC_AVX_FUNCTION_TEMPLETE(name)                                          \
+    namespace detail                                                                        \
+    {                                                                                       \
+        template <class Type> struct name                                                   \
+        {                                                                                   \
+            static decltype(auto) func(Type a, Type b, Type c, mk2::simd::intrin::arch_fma) \
+            {                                                                               \
+                return mk2::simd::intrin::wrapper::intel::name(a, b, c);                    \
+            }                                                                               \
+        };                                                                                  \
+    }                                                                                       \
+    template <class Type> inline decltype(auto) name(Type a, Type b, Type c)                \
+    {                                                                                       \
+        return detail::name<Type>::func(a, b, c, mk2::simd::intrin::available_architecture);\
     }
 
-    template <class Type>
-    inline decltype(auto) sub(Type a, Type b)
-    {
-        return detail::sub<Type>::func(a, b, mk2::simd::intrin::available_architecture);
-    }
+    MK2_ARITHMETIC_AVX_FUNCTION_TEMPLETE(fmadd)
+    MK2_ARITHMETIC_AVX_FUNCTION_TEMPLETE(fmsub)
+    MK2_ARITHMETIC_AVX_FUNCTION_TEMPLETE(fnmadd)
+    MK2_ARITHMETIC_AVX_FUNCTION_TEMPLETE(fnmsub)
+    MK2_ARITHMETIC_AVX_FUNCTION_TEMPLETE(fmaddsub)
+    MK2_ARITHMETIC_AVX_FUNCTION_TEMPLETE(fmsubadd)
 
-    template <class Type>
-    inline decltype(auto) mul(Type a, Type b)
-    {
-        return detail::mul<Type>::func(a, b, mk2::simd::intrin::available_architecture);
-    }
-
-    template <class Type>
-    inline decltype(auto) div(Type a, Type b)
-    {
-        return detail::div<Type>::func(a, b, mk2::simd::intrin::available_architecture);
-    }
+#undef MK2_ARITHMETIC_AVX_FUNCTION_TEMPLETE
 
 }}}}

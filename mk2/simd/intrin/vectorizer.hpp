@@ -9,7 +9,7 @@
 
 #include <mk2/iterator/data.hpp>
 #include <mk2/iterator/index_iterator.hpp>
-#include <mk2/simd/intrin/detail/vectorizer_buffer.hpp>
+#include <mk2/simd/intrin/detail/lazy_vectorizer_operation.hpp>
 #include <mk2/simd/intrin/function/arithmetic.hpp>
 #include <mk2/simd/intrin/function/assignment.hpp>
 #include <mk2/simd/intrin/function/comparison.hpp>
@@ -51,7 +51,9 @@ namespace mk2 { namespace simd { namespace intrin
         explicit vectorizer(const Container& c);
         explicit vectorizer(const_pointer data);
         explicit vectorizer(mm_type* mm_data);
-        explicit vectorizer(detail::vectorizer_buffer<Bits, Type, Size>&& buf);
+
+        template <class LeftType, class RightType, class Operator>
+        explicit vectorizer(detail::lazy_vectorizer<Bits, LeftType, RightType, Operator, Size>&& buf);
 
         // destructor
         virtual ~vectorizer() = default;
@@ -60,7 +62,8 @@ namespace mk2 { namespace simd { namespace intrin
         vectorizer& operator=(const vectorizer&) = default;
         vectorizer& operator=(vectorizer&&)noexcept = default;
 
-        vectorizer& operator=(detail::vectorizer_buffer<Bits, Type, Size>&& buf);
+        template <class LeftType, class RightType, class Operator>
+        vectorizer& operator=(detail::lazy_vectorizer<Bits, LeftType, RightType, Operator, Size>&& buf);
 
         // iterator
         iterator begin() noexcept { return iterator(*this, 0); }
@@ -121,10 +124,10 @@ namespace mk2 { namespace simd { namespace intrin
 
         // operation
         template <class Container, class Align> void load(const Container& p);
-        template <class Align>                  void load(pointer p);
+        template <class Align> void load(pointer p);
 
         template <class Container, class Align> void store(const Container& c);
-        template <class Align>                  void store(pointer p);
+        template <class Align> void store(pointer p);
 
         void fill(value_type value);
         void swap(vectorizer& other) noexcept(std::is_nothrow_swappable<vectorizer<Bits, Type, Size>::mm_type>::value);
@@ -173,7 +176,7 @@ namespace mk2 { namespace simd { namespace intrin
     vectorizer<Bits, Type, Size>::vectorizer(typename vectorizer<Bits, Type, Size>::mm_type* data, std::index_sequence<Indices...>)
         : elems_{ data[Indices]... }
     {}
-    
+    /*
     template <class Bits, class Type, std::size_t Size>
     vectorizer<Bits, Type, Size>::vectorizer(detail::vectorizer_buffer<Bits, Type, Size>&& buf)
         : vectorizer(buf.container, std::make_index_sequence<vectorizer<Bits, Type, Size>::mm_elems_size>())
@@ -184,6 +187,23 @@ namespace mk2 { namespace simd { namespace intrin
     vectorizer<Bits, Type, Size>& vectorizer<Bits, Type, Size>::operator=(detail::vectorizer_buffer<Bits, Type, Size>&& buf)
     {
         *this = vectorizer<Bits, Type, Size>(std::move(buf));
+        return *this;
+    }*/
+    template <class Bits, class Type, std::size_t Size>
+    template <class LeftType, class RightType, class Operator>
+    vectorizer<Bits, Type, Size>::vectorizer(detail::lazy_vectorizer<Bits, LeftType, RightType, Operator, Size>&& buf)
+        : vectorizer()
+    {
+        buf.calc(this->mm_data());
+    }
+
+    // assign
+    template <class Bits, class Type, std::size_t Size>
+    template <class LeftType, class RightType, class Operator>
+    vectorizer<Bits, Type, Size>& vectorizer<Bits, Type, Size>::operator=
+            (detail::lazy_vectorizer<Bits, LeftType, RightType, Operator, Size>&& buf)
+    {
+        buf.calc(this->mm_data());
         return *this;
     }
     
