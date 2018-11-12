@@ -23,22 +23,44 @@ namespace mk2 { namespace simd { namespace intrin {
         template <class Bits, class LeftType, class RightType, class Operator, std::size_t Size, class Enablar>
         struct lazy_vectorizer;
 
+        struct lazy_vectorizer_add
+        {
+            template <class LeftType, class RightType, class BufferType, std::size_t Size>
+            static void calc(LeftType&& lhv, RightType&& rhv, BufferType* dest)
+            {
+                constexpr std::size_t contain_size =
+                        sizeof(typename LeftType::mm_type) / sizeof(typename LeftType::type);
+                constexpr std::size_t loop_size = Size / contain_size;
+                decltype(auto) l_buf = lhv.data();
+                decltype(auto) r_buf = rhv.data();
+                for (std::size_t i = 0; i < loop_size; ++i)
+                {
+                    auto d = mk2::simd::intrin::function::add(l_buf[i], r_buf[i]);
+                    dest[i] = d;
+                }
+            }
+        };
+
+
 #define MK2_LAZY_VECTORIZER_OPERATOR_STRUCT(name)                                           \
         struct lazy_vectorizer_##name                                                       \
         {                                                                                   \
             template <class LeftType, class RightType, class BufferType, std::size_t Size>  \
             static void calc(LeftType&& lhv, RightType&& rhv, BufferType* dest)             \
             {                                                                               \
+                constexpr std::size_t contain_size =                                        \
+                    sizeof(typename LeftType::mm_type) / sizeof(typename LeftType::type);   \
+                constexpr std::size_t loop_size = Size / contain_size;                      \
                 decltype(auto) l_buf = lhv.data();                                          \
                 decltype(auto) r_buf = rhv.data();                                          \
-                for (std::size_t i = 0; i < Size; ++i)                                      \
+                for (std::size_t i = 0; i < loop_size; ++i)                                 \
                 {                                                                           \
                     dest[i] = mk2::simd::intrin::function::name(l_buf[i], r_buf[i]);        \
                 }                                                                           \
             }                                                                               \
         };
 
-        MK2_LAZY_VECTORIZER_OPERATOR_STRUCT(add)
+        //MK2_LAZY_VECTORIZER_OPERATOR_STRUCT(add)
         MK2_LAZY_VECTORIZER_OPERATOR_STRUCT(sub)
         MK2_LAZY_VECTORIZER_OPERATOR_STRUCT(mul)
         MK2_LAZY_VECTORIZER_OPERATOR_STRUCT(div)
@@ -79,6 +101,7 @@ namespace mk2 { namespace simd { namespace intrin {
             using operator_type = Operator;
             using left_buffer_type = lazy_vectorizer_buffer<Bits, left_type>;
             using right_buffer_type = lazy_vectorizer_buffer<Bits, right_type>;
+            using type = typename left_buffer_type::type;
             using mm_type = typename left_type::mm_type;
 
             static constexpr std::size_t size() { return Size; }
@@ -107,6 +130,7 @@ namespace mk2 { namespace simd { namespace intrin {
             using operator_type = Operator;
             using left_buffer_type = lazy_vectorizer_buffer<Bits, left_type>;
             using right_buffer_type = lazy_vectorizer_buffer<Bits, right_type>;
+            using type = typename left_buffer_type::type;
             using mm_type = typename left_type::mm_type;
 
             static constexpr std::size_t size() { return Size; }
@@ -152,19 +176,24 @@ namespace mk2 { namespace simd { namespace intrin {
         {
         public:
             using vectorizer_type = lazy_vectorizer<Bits, LeftType, RightType, Operator, Size>;
+            using type = typename vectorizer_type::type;
             using mm_type = typename vectorizer_type::mm_type;
 
             lazy_vectorizer_buffer(vectorizer_type&& v) : vectorizer_(std::move(v)) {}
 
-            decltype(auto) data()
+            mm_type* data()
             {
                 vectorizer_.calc(buffer_);
                 return buffer_;
             }
 
         private:
+            static constexpr std::size_t contain_size =
+                    sizeof(typename LeftType::mm_type) / sizeof(typename LeftType::type);
+            static constexpr std::size_t elems_size = Size / contain_size;
+
             vectorizer_type vectorizer_;
-            mm_type buffer_[Size];
+            mm_type buffer_[elems_size];
         };
 
         // vectorizer
@@ -172,6 +201,7 @@ namespace mk2 { namespace simd { namespace intrin {
         class lazy_vectorizer_buffer<Bits, vectorizer<Bits, Type, Size>, void>
         {
         public:
+            using type = Type;
             using mm_type = typename vectorizer<Bits, Type, Size>::mm_type;
 
             lazy_vectorizer_buffer(const vectorizer<Bits, Type, Size>& v) : buffer_(v) {}
@@ -201,6 +231,7 @@ namespace mk2 { namespace simd { namespace intrin {
             };
 
         public:
+            using type = Type;
             using mm_type = typename mk2::simd::intrin::bit_type<Type, Bits>::type;
 
             lazy_vectorizer_buffer(Type v) : buffer_(v) {}
