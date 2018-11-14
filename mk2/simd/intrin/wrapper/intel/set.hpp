@@ -11,7 +11,7 @@
 
 namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespace intel {
 
-    #define MK2_SET_ASSOCIATOR(base_struct, base_func)                                                                              \
+    #define MK2_SET_ASSOCIATOR(base_struct, base_func, ...)                                                                         \
     MK2_ARCHTECTURE_REQUIREMENT_SSE(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_ps,       (m128, float)))    \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_pd,       (m128, double)))   \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_si128,    (m128, int)))      \
@@ -27,7 +27,7 @@ namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespac
     #undef MK2_SET_ASSOCIATOR
 
     // set set1
-    #define MK2_SET1_ASSOCIATOR(base_struct, base_func)                                                                             \
+    #define MK2_SET1_ASSOCIATOR(base_struct, base_func, ...)                                                                        \
     MK2_ARCHTECTURE_REQUIREMENT_SSE(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_ps,       (m128, float)))    \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_pd,       (m128, double)))   \
     MK2_ARCHTECTURE_REQUIREMENT_AVX(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm256_##base_func##_ps,    (m256, float)))    \

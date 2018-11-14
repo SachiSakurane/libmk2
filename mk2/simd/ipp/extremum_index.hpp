@@ -9,7 +9,7 @@
 
 #include <mk2/container/fixed_array.hpp>
 #include <mk2/simd/ipp/function/fixed_accuracy_arithmetic.hpp>
-#include <mk2/simd/ipp/function/arithmetric.hpp>
+#include <mk2/simd/ipp/function/arithmetic.hpp>
 #include <mk2/simd/ipp/function/conversion.hpp>
 #include <mk2/simd/ipp/function/logical_shift.hpp>
 
@@ -39,17 +39,17 @@ namespace mk2 { namespace simd { namespace ipp {
             fesetround(FE_TONEAREST);
 
             // differential
-            function::ipps_sub(src + 1, src, dif_buf_.data(), size_ - 1);
+            function::sub(src + 1, src, dif_buf_.data(), size_ - 1);
             // ceiling
-            //wrapper::ipps_addc_inplace(static_cast<SrcType>(0.5), dif_buf_.data(), static_cast<int>(dif_buf_.size()));
-            function::ipps_ceil(dif_buf_.data(), dif_buf_.data(), static_cast<int>(dif_buf_.size()));
+            //wrapper::addc_inplace(static_cast<SrcType>(0.5), dif_buf_.data(), static_cast<int>(dif_buf_.size()));
+            function::ceil(dif_buf_.data(), dif_buf_.data(), static_cast<int>(dif_buf_.size()));
             // to logical(with -v -> 0)
-            function::ipps_convert_f2i(dif_buf_.data(), logical_buf_.data(), static_cast<int>(logical_buf_.size()));
+            function::convert_f2i(dif_buf_.data(), logical_buf_.data(), static_cast<int>(logical_buf_.size()));
 
             std::fesetround(round_type);
 
             // extremum detection
-            function::ipps_xor(logical_buf_.data(), logical_buf_.data() + 1, dst + 1, size_ - 2);
+            function::bit_xor(logical_buf_.data(), logical_buf_.data() + 1, dst + 1, size_ - 2);
             dst[0] = dst[size_ - 1] = 0;
 
             switch(type)
@@ -58,11 +58,11 @@ namespace mk2 { namespace simd { namespace ipp {
                     break;
                 
                 case extremum_type::kMaximal:
-                    function::ipps_and_inplace(logical_buf_.data(), dst + 1, static_cast<int>(logical_buf_.size()));
+                    function::bit_and_inplace(logical_buf_.data(), dst + 1, static_cast<int>(logical_buf_.size()));
                     break;
                 
                 case extremum_type::kMinimal:
-                    function::ipps_and_inplace(logical_buf_.data(), dst, static_cast<int>(logical_buf_.size()));
+                    function::bit_and_inplace(logical_buf_.data(), dst, static_cast<int>(logical_buf_.size()));
                     break;
             }
         }

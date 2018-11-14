@@ -10,7 +10,7 @@
 
 namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespace intel {
 
-    #define MK2_LOGICAL_ASSOCIATOR(base_struct, base_func)                                                                      \
+    #define MK2_LOGICAL_ASSOCIATOR(base_struct, base_func, ...)                                                                 \
     MK2_ARCHTECTURE_REQUIREMENT_SSE(     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_ps,       (__m128)))    \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_pd,       (__m128d)))   \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_si128,    (__m128i)))   \
@@ -28,7 +28,7 @@ namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespac
 
     #undef MK2_LOGICAL_ASSOCIATOR
 
-    #define MK2_LOGICAL_TEST_ASSOCIATOR(base_struct, base_func)                                                                 \
+    #define MK2_LOGICAL_TEST_ASSOCIATOR(base_struct, base_func, ...)                                                            \
     MK2_ARCHTECTURE_REQUIREMENT_SSE(     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_ps,       (__m128)))    \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_pd,       (__m128d)))   \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_si128,    (__m128i)))   \

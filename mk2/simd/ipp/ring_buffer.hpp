@@ -6,7 +6,7 @@
 
 #include <mk2/container/fixed_array.hpp>
 #include <mk2/container/container_traits.hpp>
-#include <mk2/simd/ipp/function/arithmetric.hpp>
+#include <mk2/simd/ipp/function/arithmetic.hpp>
 #include <mk2/simd/ipp/function/initialization.hpp>
 
 namespace mk2 { namespace simd { namespace ipp
@@ -17,7 +17,7 @@ namespace mk2 { namespace simd { namespace ipp
         decltype(auto) add()
         {
             return [](auto* bufptr, size_t index, int len, const auto* src)
-            { function::ipps_add_inplace(src + index, bufptr, len); };
+            { function::add_inplace(src + index, bufptr, len); };
         }
     }
 
@@ -37,20 +37,20 @@ namespace mk2 { namespace simd { namespace ipp
             auto data = container_.data();
             if (len + index_ < size_)
             {
-                function::ipps_copy(sample, data + index_, static_cast<int>(len));
+                function::copy(sample, data + index_, static_cast<int>(len));
                 index_ += len;
             }
             else if(len + index_ == size_)
             {
-                function::ipps_copy(sample, data + index_, static_cast<int>(len));
+                function::copy(sample, data + index_, static_cast<int>(len));
                 index_ = 0;
             }
             else
             {
                 auto section_size = size_ - index_;
-                function::ipps_copy(sample, data + index_, static_cast<int>(section_size));
+                function::copy(sample, data + index_, static_cast<int>(section_size));
                 index_ = len - section_size;
-                function::ipps_copy(sample + section_size, data, static_cast<int>(index_));
+                function::copy(sample + section_size, data, static_cast<int>(index_));
             }
         }
         
@@ -78,13 +78,13 @@ namespace mk2 { namespace simd { namespace ipp
             auto data = container_.data();
             if (size + index_ < size_)
             {
-                function::ipps_copy(data + index_, dst, static_cast<int>(size));
+                function::copy(data + index_, dst, static_cast<int>(size));
             }
             else
             {
                 auto section_size = size_ - index_;
-                function::ipps_copy(data + index_, dst, static_cast<int>(section_size));
-                function::ipps_copy(data, dst + section_size, static_cast<int>(size - section_size));
+                function::copy(data + index_, dst, static_cast<int>(section_size));
+                function::copy(data, dst + section_size, static_cast<int>(size - section_size));
             }
         }
 

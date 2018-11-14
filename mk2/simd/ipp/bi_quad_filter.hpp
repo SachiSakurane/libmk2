@@ -42,10 +42,10 @@ namespace mk2 { namespace simd { namespace ipp {
         bi_quad_filter(Type sample_rate) : sample_rate_(sample_rate)
         {
             int buf_size;
-            function::ipps_iir_get_state_size_bi_quad<Type>(BiQuadOrder, &buf_size);
+            function::iir_get_state_size_bi_quad<Type>(BiQuadOrder, &buf_size);
             buffer_ = ippsMalloc_8u(buf_size);
             bi_quad_coefficients<Type>::all_pass(coefficients_.data(), sample_rate, static_cast<Type>(100), mk2::math::int_root_two<Type>);
-            function::ipps_iir_init_bi_quad(&state, coefficients_.data(), BiQuadOrder, static_cast<const Type*>(nullptr), buffer_);
+            function::iir_init_bi_quad(&state, coefficients_.data(), BiQuadOrder, static_cast<const Type*>(nullptr), buffer_);
         }
     
         ~bi_quad_filter()
@@ -56,17 +56,17 @@ namespace mk2 { namespace simd { namespace ipp {
         
         void set_coefficients(const float* cofs)
         {
-            function::ipps_copy(cofs, coefficients_.data(), BiQuadOrder * 6);
+            function::copy(cofs, coefficients_.data(), BiQuadOrder * 6);
         }
     
         void operator()(const Type* src, Type* dst, int len)
         {
-            function::ipps_iir(src, dst, len, state);
+            function::iir(src, dst, len, state);
         }
     
         void inplace(Type* src_dst, int len)
         {
-            function::ipps_iir_inplace(src_dst, len, state);
+            function::iir_inplace(src_dst, len, state);
         }
         
     private:

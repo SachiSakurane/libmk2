@@ -5,7 +5,7 @@
 #pragma once
 
 #include <boost/preprocessor.hpp>
-
+/*
 namespace mk2 { namespace simd { namespace ipp { namespace function {
     
     #define IPP_ADD_CLASS_IMPL_FOR_PRED(r, state) BOOST_PP_LESS(BOOST_PP_TUPLE_ELEM(0, state), BOOST_PP_TUPLE_ELEM(1, state))
@@ -43,3 +43,20 @@ namespace mk2 { namespace simd { namespace ipp { namespace function {
     { return detail::func_name##_impl<__VA_ARGS__>::func(IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS); }
 
 }}}}
+*/
+#define MK2_IPP_NAME_FUNC(dif, base, descriptor) base##dif##descriptor
+
+#define MK2_IPP_REPLACE_TEMPLATE(name, base_name, descriptor, signature, args, template_name, associator)   \
+MK2_IPP_REPLACE_TEMPLATE_REDUNDANCY(name, base_name, descriptor, signature, args, template_name, template_name, associator)
+
+#define MK2_IPP_REPLACE_TEMPLATE_REDUNDANCY(name, base_name, descriptor, signature, args, template_name, template_init, associator)    \
+MK2_PP_REPLACE_TO_TEMPLATE_REDUNDANCY(name, MK2_IPP_NAME_FUNC, signature, args, template_name, template_init, associator, base_name, descriptor)
+
+
+#define MK2_IPP_REPLACE_TEMPLATE_ADDITIVE(name, base_name, descriptor, signature, args, template_name, associator)   \
+MK2_IPP_REPLACE_TEMPLATE_ADDITIVE_REDUNDANCY(name, base_name, descriptor, signature, args, template_name, template_name, associator)
+
+#define MK2_IPP_REPLACE_TEMPLATE_ADDITIVE_REDUNDANCY(name, base_name, descriptor, signature, args, template_name, template_init, associator)    \
+MK2_PP_REPLACE_TO_TEMPLATE_ADDITIVE_REDUNDANCY(name, MK2_IPP_NAME_FUNC, signature, args, template_name, template_init, associator, base_name, descriptor)
+
+

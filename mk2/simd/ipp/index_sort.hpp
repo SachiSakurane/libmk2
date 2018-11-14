@@ -7,7 +7,7 @@
 #include <memory>
 
 #include <mk2/container/fixed_array.hpp>
-#include <mk2/simd/ipp/function/arithmetric.hpp>
+#include <mk2/simd/ipp/function/arithmetic.hpp>
 #include <mk2/simd/ipp/function/conversion.hpp>
 #include <mk2/simd/ipp/function/fixed_accuracy_arithmetic.hpp>
 
@@ -80,7 +80,7 @@ namespace mk2 { namespace simd { namespace ipp {
                     auto dst_ptr = dst + processed;
                     auto process_size = len < isize_ ? len : isize_;
 
-                    ipp::function::ipps_convert_f2i(src_ptr, indexes_.data(), process_size, ippRndNear);
+                    ipp::function::convert_f2i(src_ptr, indexes_.data(), process_size, ippRndNear);
 
                     for (int index = 0; index < process_size; ++index)
                     {
@@ -134,10 +134,10 @@ namespace mk2 { namespace simd { namespace ipp {
                     auto dst_ptr = dst + processed;
                     auto process_size = len < isize_ ? len : isize_;
 
-                    ipp::function::ipps_convert_f2i(src_ptr, indexes1_.data(), process_size, ippRndNear);
-                    ipp::function::ipps_addc_sfs(indexes1_.data(), 1, indexes2_.data(), process_size);
-                    ipp::function::ipps_threshold_gt_inplace(indexes2_.data(), process_size, max);
-                    ipp::function::ipps_frac(src_ptr, buffer_.data(), process_size);
+                    ipp::function::convert_f2i(src_ptr, indexes1_.data(), process_size, ippRndNear);
+                    ipp::function::addc_sfs(indexes1_.data(), 1, indexes2_.data(), process_size);
+                    ipp::function::threshold_gt_inplace(indexes2_.data(), process_size, max);
+                    ipp::function::frac(src_ptr, buffer_.data(), process_size);
 
                     for (int index = 0; index < process_size; ++index)
                     {
@@ -145,9 +145,9 @@ namespace mk2 { namespace simd { namespace ipp {
                         sample2_[index] = src1[indexes2_[index]];
                     }
 
-                    ipp::function::ipps_mul(buffer_.data(), sample2_.data(), dst_ptr, process_size);
-                    ipp::function::ipps_subc_rev_inplace(static_cast<FloatType>(1), buffer_.data(), process_size);
-                    ipp::function::ipps_add_product(buffer_.data(), sample1_.data(), dst_ptr, process_size);
+                    ipp::function::mul(buffer_.data(), sample2_.data(), dst_ptr, process_size);
+                    ipp::function::subc_rev_inplace(static_cast<FloatType>(1), buffer_.data(), process_size);
+                    ipp::function::addprod(buffer_.data(), sample1_.data(), dst_ptr, process_size);
                 }
             }
 

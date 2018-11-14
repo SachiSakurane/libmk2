@@ -10,8 +10,8 @@
 #include <mk2/simd/intrin/vectorizer.hpp>
 #include <mk2/simd/intrin/function/arithmetic.hpp>
 #include <mk2/simd/intrin/function/set.hpp>
+#include <mk2/simd/intrin/type_traits/architecture.hpp>
 #include <mk2/simd/intrin/type_traits/bit_type.hpp>
-#include <mk2/simd/intrin/utility/archtecture_requirement.hpp>
 
 namespace mk2 { namespace simd { namespace intrin {
 
@@ -19,29 +19,6 @@ namespace mk2 { namespace simd { namespace intrin {
 
     namespace detail
     {
-
-        template <class Bits, class LeftType, class RightType, class Operator, std::size_t Size, class Enablar>
-        struct lazy_vectorizer;
-
-        struct lazy_vectorizer_add
-        {
-            template <class LeftType, class RightType, class BufferType, std::size_t Size>
-            static void calc(LeftType&& lhv, RightType&& rhv, BufferType* dest)
-            {
-                constexpr std::size_t contain_size =
-                        sizeof(typename LeftType::mm_type) / sizeof(typename LeftType::type);
-                constexpr std::size_t loop_size = Size / contain_size;
-                decltype(auto) l_buf = lhv.data();
-                decltype(auto) r_buf = rhv.data();
-                for (std::size_t i = 0; i < loop_size; ++i)
-                {
-                    auto d = mk2::simd::intrin::function::add(l_buf[i], r_buf[i]);
-                    dest[i] = d;
-                }
-            }
-        };
-
-
 #define MK2_LAZY_VECTORIZER_OPERATOR_STRUCT(name)                                           \
         struct lazy_vectorizer_##name                                                       \
         {                                                                                   \
@@ -60,7 +37,7 @@ namespace mk2 { namespace simd { namespace intrin {
             }                                                                               \
         };
 
-        //MK2_LAZY_VECTORIZER_OPERATOR_STRUCT(add)
+        MK2_LAZY_VECTORIZER_OPERATOR_STRUCT(add)
         MK2_LAZY_VECTORIZER_OPERATOR_STRUCT(sub)
         MK2_LAZY_VECTORIZER_OPERATOR_STRUCT(mul)
         MK2_LAZY_VECTORIZER_OPERATOR_STRUCT(div)
@@ -102,7 +79,7 @@ namespace mk2 { namespace simd { namespace intrin {
             using left_buffer_type = lazy_vectorizer_buffer<Bits, left_type>;
             using right_buffer_type = lazy_vectorizer_buffer<Bits, right_type>;
             using type = typename left_buffer_type::type;
-            using mm_type = typename left_type::mm_type;
+            using mm_type = typename left_buffer_type::mm_type;
 
             static constexpr std::size_t size() { return Size; }
 
@@ -120,10 +97,9 @@ namespace mk2 { namespace simd { namespace intrin {
         };
 
         // fma
-        //MK2_ARCHTECTURE_REQUIREMENT_FMA(
         template <class Bits, class LeftType, class RightType, class Operator, std::size_t Size>
         struct lazy_vectorizer<Bits, LeftType, RightType, Operator, Size,
-                typename std::enable_if<is_transformable_fma<LeftType, RightType>::value>::type>
+                typename std::enable_if<mk2::simd::intrin::arch_fma::value && is_transformable_fma<LeftType, RightType>::value>::type>
         {
             using left_type = LeftType;
             using right_type = RightType;
@@ -168,7 +144,6 @@ namespace mk2 { namespace simd { namespace intrin {
             left_buffer_type  lhv_;
             right_buffer_type rhv_;
         };
-        //)
 
         // vectorizer_buffer
         template <class Bits, class LeftType, class RightType, class Operator, std::size_t Size>
@@ -188,12 +163,9 @@ namespace mk2 { namespace simd { namespace intrin {
             }
 
         private:
-            static constexpr std::size_t contain_size =
-                    sizeof(typename LeftType::mm_type) / sizeof(typename LeftType::type);
-            static constexpr std::size_t elems_size = Size / contain_size;
 
             vectorizer_type vectorizer_;
-            mm_type buffer_[elems_size];
+            mm_type buffer_[Size / (sizeof(mm_type) / sizeof(type))];
         };
 
         // vectorizer
@@ -345,7 +317,7 @@ namespace mk2 { namespace simd { namespace intrin {
             Type lhv, const mk2::simd::intrin::vectorizer<Bits, Type, Size>& rhv)                   \
     {                                                                                               \
         using v_type = vectorizer<Bits, Type, Size>;                                                \
-        return detail::lazy_vectorizer<Bits, v_type, Type, detail::lazy_vectorizer_##name, Size>(   \
+        return detail::lazy_vectorizer<Bits, Type, v_type, detail::lazy_vectorizer_##name, Size>(   \
                 detail::lazy_vectorizer_buffer<Bits, Type>(lhv),                                    \
                 detail::lazy_vectorizer_buffer<Bits, v_type>(rhv));                                 \
     }

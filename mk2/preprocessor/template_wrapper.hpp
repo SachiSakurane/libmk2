@@ -22,25 +22,25 @@ template<> struct base_struct<BOOST_PP_TUPLE_ENUM(template_value)>              
 };
 
 #define MK2_PP_REPLACE_TO_TEMPLATE(func_name, base_func, signature, args, template_name, associator)                    \
-MK2_PP_REPLACE_TO_TEMPLATE_REDUNDANCY(func_name, base_func, signature, args, template_name, template_name, associator)
+MK2_PP_REPLACE_TO_TEMPLATE_REDUNDANCY(func_name, base_func, signature, args, template_name, template_name, associator, )
 
-#define MK2_PP_REPLACE_TO_TEMPLATE_REDUNDANCY(func_name, base_func, signature, args, template_name, template_init, associator)  \
+#define MK2_PP_REPLACE_TO_TEMPLATE_REDUNDANCY(func_name, base_func, signature, args, template_name, template_init, associator, ...)  \
 namespace detail                                                                                \
 {                                                                                               \
     template<MK2_PP_ADD_CLASS(BOOST_PP_TUPLE_ENUM(template_name))> struct func_name##_impl{};   \
-    associator(func_name##_impl, base_func)                                                     \
+    associator(func_name##_impl, base_func, __VA_ARGS__)                                        \
 }                                                                                               \
 template<MK2_PP_ADD_CLASS(BOOST_PP_TUPLE_ENUM(template_init))>                                  \
 inline decltype(auto) func_name(BOOST_PP_TUPLE_ENUM(signature))                                 \
 { return detail::func_name##_impl<BOOST_PP_TUPLE_ENUM(template_name)>::func(BOOST_PP_TUPLE_ENUM(args)); }
 
 #define MK2_PP_REPLACE_TO_TEMPLATE_ADDITIVE(func_name, base_func, signature, args, template_name, associator)   \
-MK2_PP_REPLACE_TO_TEMPLATE_ADDITIVE_REDUNDANCY(func_name, base_func, signature, args, template_name, template_name, associator)
+MK2_PP_REPLACE_TO_TEMPLATE_ADDITIVE_REDUNDANCY(func_name, base_func, signature, args, template_name, template_name, associator, )
 
-#define MK2_PP_REPLACE_TO_TEMPLATE_ADDITIVE_REDUNDANCY(func_name, base_func, signature, args, template_name, template_init, associator) \
+#define MK2_PP_REPLACE_TO_TEMPLATE_ADDITIVE_REDUNDANCY(func_name, base_func, signature, args, template_name, template_init, associator, ...) \
 namespace detail                                                \
 {                                                               \
-    associator(func_name##_impl, base_func)                     \
+    associator(func_name##_impl, base_func, __VA_ARGS__)        \
 }                                                               \
 template<MK2_PP_ADD_CLASS(BOOST_PP_TUPLE_ENUM(template_init))>  \
 inline decltype(auto) func_name(BOOST_PP_TUPLE_ENUM(signature)) \

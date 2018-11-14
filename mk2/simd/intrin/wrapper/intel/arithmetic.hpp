@@ -16,7 +16,7 @@ namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespac
     MK2_ARCHTECTURE_REQUIREMENT_AVX512F(MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm512_##base_func##_ps,    (__m512))) \
     MK2_ARCHTECTURE_REQUIREMENT_AVX512F(MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm512_##base_func##_pd,    (__m512d)))
 
-    #define MK2_ARITHMETIC_ASSOCIATOR(base_struct, base_func)                                                               \
+    #define MK2_ARITHMETIC_ASSOCIATOR(base_struct, base_func, ...)                                                          \
     MK2_ARCHTECTURE_REQUIREMENT_SSE(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_ps,       (__m128))) \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_pd,       (__m128d)))\
     MK2_ARITHMETIC_ASSOCIATOR_AVX_LATER(base_struct, base_func)
@@ -28,7 +28,7 @@ namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespac
 
     #undef MK2_ARITHMETIC_ASSOCIATOR
 
-    #define MK2_ARITHMETIC_ADDSUB_ASSOCIATOR(base_struct, base_func)                                                        \
+    #define MK2_ARITHMETIC_ADDSUB_ASSOCIATOR(base_struct, base_func, ...)                                                   \
     MK2_ARCHTECTURE_REQUIREMENT_SSE3(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_ps,       (__m128))) \
     MK2_ARCHTECTURE_REQUIREMENT_SSE3(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_pd,       (__m128d)))\
     MK2_ARITHMETIC_ASSOCIATOR_AVX_LATER(base_struct, base_func)
@@ -37,7 +37,7 @@ namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespac
 
     #undef MK2_ARITHMETIC_ADDSUB_ASSOCIATOR
 
-    #define MK2_ARITHMETIC_S_ASSOCIATOR(base_struct, base_func)                                                             \
+    #define MK2_ARITHMETIC_S_ASSOCIATOR(base_struct, base_func, ...)                                                        \
     MK2_ARCHTECTURE_REQUIREMENT_SSE(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_ss,       (__m128))) \
     MK2_ARCHTECTURE_REQUIREMENT_SSE2(   MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_sd,       (__m128d)))\
     MK2_ARCHTECTURE_REQUIREMENT_AVX(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm256_##base_func##_ss,    (__m256))) \
@@ -51,7 +51,7 @@ namespace mk2 { namespace simd { namespace intrin { namespace wrapper { namespac
     #undef MK2_ARITHMETIC_S_ASSOCIATOR
 
     // fma
-    #define MK2_ARITHMETIC_FMA_ASSOCIATOR(base_struct, base_func)                                                           \
+    #define MK2_ARITHMETIC_FMA_ASSOCIATOR(base_struct, base_func, ...)                                                      \
     MK2_ARCHTECTURE_REQUIREMENT_FMA(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_ps,       (__m128))) \
     MK2_ARCHTECTURE_REQUIREMENT_FMA(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm_##base_func##_pd,       (__m128d)))\
     MK2_ARCHTECTURE_REQUIREMENT_FMA(    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, _mm256_##base_func##_ps,    (__m256))) \
