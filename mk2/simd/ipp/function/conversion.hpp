@@ -43,10 +43,10 @@ namespace function {
     MK2_IPP_CONVERSION_FLOAT_ASSOCIATOR(base_struct, base_func, name, desc)
 
     // flip
-    MK2_IPP_REPLACE_TEMPLATE(flip, ippsFilp, , (const Type* psrc, Type* pdst, int len), (psrc, pdst, len), (Type), MK2_IPP_CONVERSION_FLIP_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(flip, ippsFlip, , (const Type* psrc, Type* pdst, int len), (psrc, pdst, len), (Type), MK2_IPP_CONVERSION_FLIP_ASSOCIATOR)
 
     // flip inplace
-    MK2_IPP_REPLACE_TEMPLATE(flip_inplace, ippsFilp, _I, (Type* psrcdst, int len), (psrcdst, len), (Type), MK2_IPP_CONVERSION_FLIP_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(flip_inplace, ippsFlip, _I, (Type* psrcdst, int len), (psrcdst, len), (Type), MK2_IPP_CONVERSION_FLIP_ASSOCIATOR)
 
 #undef MK2_IPP_CONVERSION_FLIP_ASSOCIATOR
 

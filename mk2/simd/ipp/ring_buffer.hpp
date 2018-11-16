@@ -14,11 +14,15 @@ namespace mk2 { namespace simd { namespace ipp
     // OperationFunc: f(Type bufptr, size index, int len, args...)
     namespace ring_buffer_operation
     {
-        decltype(auto) add()
+        struct add
         {
-            return [](auto* bufptr, size_t index, int len, const auto* src)
-            { function::add_inplace(src + index, bufptr, len); };
-        }
+            template <class Type>
+            decltype(auto) operator()(Type* bufptr, size_t index, int len, const Type* src)
+            {
+                return function::add_inplace(src + index, bufptr, len);
+            }
+
+        };
     }
 
     template<class Type>

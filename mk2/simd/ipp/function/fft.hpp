@@ -6,6 +6,7 @@
 
 #include <ipps.h>
 
+#include <mk2/preprocessor/template_wrapper.hpp>
 #include <mk2/simd/ipp/function/macro.hpp>
 
 namespace mk2 { namespace simd { namespace ipp {
@@ -27,29 +28,29 @@ namespace function {
 
 #undef MK2_IPP_FFT_INIT_ASSOCIATOR
 
-#define MK2_IPP_FFT_REAL_ASSOCIATOR(base_struct, base_func, name, desc)                                     \
-    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_32f,  name, desc), (Ipp32f,  IppsFFTSpec_R_32f))\
-    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_64f,  name, desc), (Ipp64f,  IppsFFTSpec_R_64f))
+#define MK2_IPP_FFT_ASSOCIATOR_FLOAT(base_struct, base_func, name, desc)                                        \
+    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_32f,  name, desc), (Ipp32f,  IppsFFTSpec_C_32f))    \
+    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_64f,  name, desc), (Ipp64f,  IppsFFTSpec_C_64f))
 
-#define MK2_IPP_FFT_IMAG_ASSOCIATOR(base_struct, base_func, name, desc)                                         \
+#define MK2_IPP_FFT_ASSOCIATOR_COMPLEX(base_struct, base_func, name, desc)                                      \
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_32fc, name, desc), (Ipp32fc, IppsFFTSpec_C_32fc))   \
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_64fc, name, desc), (Ipp64fc, IppsFFTSpec_C_64fc))
 
     // real
-    MK2_IPP_REPLACE_TEMPLATE(fft_fwd_ctoc, ippsFFTFwd_CToC, , (const Type* psrc_re, const Type* psrc_im, Type* pdst_re, Type* pdst_im, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrc_re, psrc_im, pdst_re, pdst_im, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_REAL_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(fft_inv_ctoc, ippsFFTInv_CToC, , (const Type* psrc_re, const Type* psrc_im, Type* pdst_re, Type* pdst_im, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrc_re, psrc_im, pdst_re, pdst_im, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_REAL_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE_ADDITIVE(fft_fwd_ctoc, ippsFFTFwd_CToC, , (const Type* psrc, Type* pdst, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrc, pdst, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_IMAG_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE_ADDITIVE(fft_inv_ctoc, ippsFFTInv_CToC, , (const Type* psrc, Type* pdst, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrc, pdst, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_IMAG_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(fft_fwd_ctoc, ippsFFTFwd_CToC, , (const Type* psrc_re, const Type* psrc_im, Type* pdst_re, Type* pdst_im, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrc_re, psrc_im, pdst_re, pdst_im, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_ASSOCIATOR_FLOAT)
+    MK2_IPP_REPLACE_TEMPLATE(fft_inv_ctoc, ippsFFTInv_CToC, , (const Type* psrc_re, const Type* psrc_im, Type* pdst_re, Type* pdst_im, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrc_re, psrc_im, pdst_re, pdst_im, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_ASSOCIATOR_FLOAT)
+    MK2_IPP_REPLACE_TEMPLATE_ADDITIVE(fft_fwd_ctoc, ippsFFTFwd_CToC, , (const Type* psrc, Type* pdst, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrc, pdst, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_ASSOCIATOR_COMPLEX)
+    MK2_IPP_REPLACE_TEMPLATE_ADDITIVE(fft_inv_ctoc, ippsFFTInv_CToC, , (const Type* psrc, Type* pdst, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrc, pdst, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_ASSOCIATOR_COMPLEX)
 
     // inplace
-    MK2_IPP_REPLACE_TEMPLATE(fft_fwd_ctoc_inplace, ippsFFTFwd_CToC, _I, (Type* psrc_dst_re, Type* psrc_dst_im, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrc_dst_re, psrc_dst_im, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_REAL_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(fft_inv_ctoc_inplace, ippsFFTInv_CToC, _I, (Type* psrc_dst_re, Type* psrc_dst_im, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrc_dst_re, psrc_dst_im, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_REAL_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE_ADDITIVE(fft_fwd_ctoc_inplace, ippsFFTFwd_CToC, _I, (Type* psrcdst, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrcdst, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_IMAG_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE_ADDITIVE(fft_inv_ctoc_inplace, ippsFFTInv_CToC, _I, (Type* psrcdst, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrcdst, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_IMAG_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(fft_fwd_ctoc_inplace, ippsFFTFwd_CToC, _I, (Type* psrc_dst_re, Type* psrc_dst_im, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrc_dst_re, psrc_dst_im, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_ASSOCIATOR_FLOAT)
+    MK2_IPP_REPLACE_TEMPLATE(fft_inv_ctoc_inplace, ippsFFTInv_CToC, _I, (Type* psrc_dst_re, Type* psrc_dst_im, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrc_dst_re, psrc_dst_im, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_ASSOCIATOR_FLOAT)
+    MK2_IPP_REPLACE_TEMPLATE_ADDITIVE(fft_fwd_ctoc_inplace, ippsFFTFwd_CToC, _I, (Type* psrcdst, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrcdst, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_ASSOCIATOR_COMPLEX)
+    MK2_IPP_REPLACE_TEMPLATE_ADDITIVE(fft_inv_ctoc_inplace, ippsFFTInv_CToC, _I, (Type* psrcdst, const IppsFFTSpec* pfft_spec, Ipp8u* pbuffer), (psrcdst, pfft_spec, pbuffer), (Type, IppsFFTSpec), MK2_IPP_FFT_ASSOCIATOR_COMPLEX)
 
 
-#undef MK2_IPP_FFT_REAL_ASSOCIATOR
-#undef MK2_IPP_FFT_IMAG_ASSOCIATOR
+#undef MK2_IPP_FFT_ASSOCIATOR_FLOAT
+#undef MK2_IPP_FFT_ASSOCIATOR_COMPLEX
 
     /*
     #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor)                \
