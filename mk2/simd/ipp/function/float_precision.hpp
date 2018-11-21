@@ -10,8 +10,12 @@
 
 namespace mk2 { namespace simd { namespace ipp { namespace function {
 
-    struct precision_high{};
-    struct precision_mid{};
-    struct precision_low{};
+    struct precision_high_t{};
+    struct precision_mid_t{};
+    struct precision_low_t{};
+    
+    static precision_high_t precision_high;
+    static precision_mid_t precision_mid;
+    static precision_low_t precision_low;
     
 }}}}
