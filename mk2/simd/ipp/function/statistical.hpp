@@ -48,83 +48,17 @@ namespace function {
 
 #undef MK2_IPP_STATISTICAL_MAX_MIN_ASSOCIATOR
 
-    /*
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor)    \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f##descriptor, Ipp32f)    \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f##descriptor, Ipp64f)    \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32fc##descriptor, Ipp32fc)  \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64fc##descriptor, Ipp64fc)
+#define MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR(base_struct, base_func, name, desc) \
+    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_8u,  name, desc), (Ipp8u))   \
+    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_16u, name, desc), (Ipp16u))  \
+    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_32f, name, desc), (Ipp32f))  \
+    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_64f, name, desc), (Ipp64f))
     
-    // not inplace
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
-    const Type* psrc, int len, Type* psum, IppHintAlgorithm hint
-    
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
-    psrc, len, psum, hint
-    
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_sum, ippsSum, , Type)
-    
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
-    
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
+    MK2_IPP_REPLACE_TEMPLATE(max_every, ippsMaxEvery, , (const Type* psrc1, const Type* psrc2, Type* pdst, Ipp32u len), (psrc1, psrc2, pdst, len), (Type), MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(min_every, ippsMinEvery, , (const Type* psrc1, const Type* psrc2, Type* pdst, Ipp32u len), (psrc1, psrc2, pdst, len), (Type), MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(max_every_inplace, ippsMaxEvery, _I, (const Type* psrc, Type* psrcdst, Ipp32u len), (psrc, psrcdst, len), (Type), MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(min_every_inplace, ippsMinEvery, _I, (const Type* psrc, Type* psrcdst, Ipp32u len), (psrc, psrcdst, len), (Type), MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR)
 
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor)                            \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f##descriptor, Ipp32f, Ipp32f, Ipp32f)            \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32fc##descriptor, Ipp32fc, Ipp32fc, Ipp32fc)        \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f32fc##descriptor, Ipp32f, Ipp32fc, Ipp32fc)      \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f64f##descriptor, Ipp32f, Ipp32f, Ipp64f)         \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32fc64fc##descriptor, Ipp32fc, Ipp32fc, Ipp64fc)    \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f32fc64fc##descriptor, Ipp32f, Ipp32fc, Ipp64fc)  \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f##descriptor, Ipp64f, Ipp64f, Ipp64f)            \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64fc##descriptor, Ipp64fc, Ipp64fc, Ipp64fc)        \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f64fc##descriptor, Ipp64f, Ipp64fc, Ipp64fc)
+#undef MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR    
     
-    // not inplace
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
-    const Type1* psrc1, const Type2* psrc2, int len, Type3* pdp
-    
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
-    psrc1, psrc2, len, pdp
-    
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_dot_prod, ippsDotProd, , Type1, Type2, Type3)
-    
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
-    
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
-    */
-    /*
-    // max min
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor)    \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_16s##descriptor, Ipp16s)    \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32s##descriptor, Ipp32s)    \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32f##descriptor, Ipp32f)    \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_64f##descriptor, Ipp64f)
-    
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
-    const Type* psrc, int len, Type* pdst
-    
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
-    psrc, len, pdst
-    
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_max, ippsMax, , Type)
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_min, ippsMin, , Type)
-    
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
-                
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
-    const Type* psrc, int len, Type* pmin, Type* pmax
-    
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
-    psrc, len, pmin, pmax
-    
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_min_max, ippsMinMax, , Type)
-    
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
-                
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
-    */
 }}}}
