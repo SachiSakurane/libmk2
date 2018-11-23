@@ -26,9 +26,9 @@ namespace mk2 { namespace simd { namespace ipp {
                 (order_, IPP_FFT_NODIV_BY_ANY, &size_fft_spec, &size_fft_init_buf, &size_fft_work_buf);
     
             ptr_type pfft_init_buf;
-            pfft_spec_buf_ = ippsMalloc_8u(size_fft_spec);
-            pfft_init_buf  = ippsMalloc_8u(size_fft_init_buf);
-            pfft_work_buf_ = ippsMalloc_8u(size_fft_work_buf);
+            pfft_spec_buf_ = ptr_type(ippsMalloc_8u(size_fft_spec));
+            pfft_init_buf  = ptr_type(ippsMalloc_8u(size_fft_init_buf));
+            pfft_work_buf_ = ptr_type(ippsMalloc_8u(size_fft_work_buf));
 
             mk2::simd::ipp::function::fft_init(&fft_spec_, order_, IPP_FFT_NODIV_BY_ANY, pfft_spec_buf_.get(), pfft_init_buf.get());
         }
@@ -57,8 +57,8 @@ namespace mk2 { namespace simd { namespace ipp {
         
     private:
         const int order_;
-        ptr_type Ipp8u pfft_spec_buf_;
-        ptr_type Ipp8u pfft_work_buf_;
+        ptr_type pfft_spec_buf_;
+        ptr_type pfft_work_buf_;
         spec_type *fft_spec_;
     };
 }}}

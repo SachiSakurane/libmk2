@@ -28,7 +28,7 @@ namespace mk2 { namespace simd { namespace ipp {
         
         ~true_envelope() = default;
         
-        IppStatus operator()(const Type* src_re, const Type* src_im, Type* dst, Type threshold, std::size_t lifter, std::size_t max_iteration = 16, bool inverse = true)
+        IppStatus operator()(const Type* src_re, const Type* src_im, Type* dst, Type threshold_db, std::size_t lifter, std::size_t max_iteration = 16, bool inverse = true)
         {
             using ipf = mk2::simd::ipp::function;
             const int size = static_cast<int>(calc_buffer_.size());
@@ -37,14 +37,14 @@ namespace mk2 { namespace simd { namespace ipp {
             // power spectrum
             err |= fft_.forward(src_re, src_im, spectrum_.data(), calc_buffer_.data());
             err |= ipf::power_spectr(spectrum_.data(), calc_buffer_.data(), spectrum_.data(), size);
-            //err |= ipf::log10(spectrum_.data(), spectrum_.data(), size, mk2::simd::ipp::precision_high);
+            err |= ipf::log(spectrum_.data(), spectrum_.data(), size, mk2::simd::ipp::precision_high);
             
             err |= ipf::copy(spectrum_.data(), dst, size);
             
             Type max_dif = std::numeric_limits<Type>::infnity();
             
             // true spectrum iteration
-            for (std::size_t i = 1; i < max_iteration && max_dif > threshold; ++i)
+            for (std::size_t i = 1; i < max_iteration && max_dif > threshold_db; ++i)
             {
                 err |= ipf::zero(calc_buffer_.data(), size);
                 

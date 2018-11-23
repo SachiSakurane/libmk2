@@ -165,44 +165,5 @@ namespace function {
 #undef MK2_IPP_ARITHMETIC_ASSOCIATOR_FLOAT_COMPLEX
 #undef MK2_IPP_ARITHMETIC_FLOAT_ASSOCIATOR
 #undef MK2_IPP_ARITHMETIC_ASSOCIATOR
-/*
-    // c scaling
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR(base_struct, base_func, descriptor)    \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_8u##descriptor, Ipp8u)      \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_16u##descriptor, Ipp16u)    \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_16s##descriptor, Ipp16s)    \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32s##descriptor, Ipp32s)    \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_16sc##descriptor, Ipp16sc)  \
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func##_32sc##descriptor, Ipp32sc)
 
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
-    const Type* psrc, Type val, Type* pdst, int len, int scale_factor = 0
-
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
-    psrc, val, pdst, len, scale_factor
-
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_addc_sfs, ippsAddC, _Sfs, Type)
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_subc_sfs, ippsSubC, _Sfs, Type)
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_mulc_sfs, ippsMulC, _Sfs, Type)
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_subc_rev_sfs, ippsSubCRev, _Sfs, Type)
-
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
-
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE \
-    Type val, Type* psrc_dst, int len, int scale_factor = 0
-
-    #define IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS   \
-    val, psrc_dst, len, scale_factor
-
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_addc_inplace_sfs, ippsAddC, _ISfs, Type)
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_subc_inplace_sfs, ippsSubC, _ISfs, Type)
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_mulc_inplace_sfs, ippsMulC, _ISfs, Type)
-    IPP_FUNCTIONS_REPLACE_TO_TEMPLATE(ipps_subc_rev_inplace_sfs, ippsSubCRev, _ISfs, Type)
-
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_SIGNATURE
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ARGS
-
-    #undef IPP_FUNCTIONS_REPLACE_TO_TEMPLATE_ASSOCIATOR
-    */
 }}}}
