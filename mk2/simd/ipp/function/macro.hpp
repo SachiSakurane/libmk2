@@ -5,6 +5,7 @@
 #pragma once
 
 #include <boost/preprocessor.hpp>
+#include <mk2/preprocessor/template_wrapper.hpp>
 
 #define MK2_IPP_NAME_FUNC(dif, base, descriptor) base##dif##descriptor
 
@@ -20,5 +21,3 @@ MK2_IPP_REPLACE_TEMPLATE_ADDITIVE_REDUNDANCY(name, base_name, descriptor, signat
 
 #define MK2_IPP_REPLACE_TEMPLATE_ADDITIVE_REDUNDANCY(name, base_name, descriptor, signature, args, template_name, template_init, associator)    \
 MK2_PP_REPLACE_TO_TEMPLATE_ADDITIVE_REDUNDANCY(name, MK2_IPP_NAME_FUNC, signature, args, template_name, template_init, associator, base_name, descriptor)
-
-

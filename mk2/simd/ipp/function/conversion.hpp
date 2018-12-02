@@ -20,7 +20,7 @@ namespace function {
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_64fc, name, desc), (Ipp64fc, Ipp64f))
 
     // power spectr real
-    MK2_IPP_REPLACE_TEMPLATE(power_spectr, ippsPowerSpectr, , (const ComplexType* psrc_re, const ComplexType* psrc_im, Type* pdst, int len), (psrc_re, psrc_im, pdst, len), (ComplexType, Type), MK2_IPP_CONVERSION_ASSOCIATOR_FLOAT_FLOAT)
+    MK2_IPP_REPLACE_TEMPLATE(power_spectr, ippsPowerSpectr, , (const FloatType* psrc_re, const FloatType* psrc_im, Type* pdst, int len), (psrc_re, psrc_im, pdst, len), (FloatType, Type), MK2_IPP_CONVERSION_ASSOCIATOR_FLOAT_FLOAT)
 
     // power spectr complex
     MK2_IPP_REPLACE_TEMPLATE_ADDITIVE(power_spectr, ippsPowerSpectr, , (const ComplexType* psrc, Type* pdst, int len), (psrc, pdst, len), (ComplexType, Type), MK2_IPP_CONVERSION_ASSOCIATOR_FLOAT_COMPLEX_FLOAT)

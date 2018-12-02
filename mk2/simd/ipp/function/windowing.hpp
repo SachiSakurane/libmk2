@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <ipps.h>
+
 #include <mk2/simd/ipp/function/macro.hpp>
 
 namespace mk2 { namespace simd { namespace ipp {

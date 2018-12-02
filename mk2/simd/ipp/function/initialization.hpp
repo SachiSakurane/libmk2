@@ -27,7 +27,7 @@ namespace function {
     MK2_IPP_REPLACE_TEMPLATE(copy, ippsCopy, , (const Type* psrc, Type* pdst, int len), (psrc, pdst, len), (Type), MK2_IPP_INITIALIZATION_ASSOCIATOR)
     MK2_IPP_REPLACE_TEMPLATE(move, ippsMove, , (const Type* psrc, Type* pdst, int len), (psrc, pdst, len), (Type), MK2_IPP_INITIALIZATION_ASSOCIATOR)
 
-    MK2_IPP_REPLACE_TEMPLATE(set, ippsSet, , (Type val, Type* pdst, int len), (val, pdst, len), (Type), MK2_IPP_INITIALIZATION_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(set,  ippsSet,  , (Type val, Type* pdst, int len), (val, pdst, len), (Type), MK2_IPP_INITIALIZATION_ASSOCIATOR)
 
     MK2_IPP_REPLACE_TEMPLATE(zero, ippsZero, , (Type* pdst, int len), (pdst, len), (Type), MK2_IPP_INITIALIZATION_ASSOCIATOR)
 
