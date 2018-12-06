@@ -52,7 +52,7 @@ namespace mk2 { namespace simd { namespace ipp {
                 else         err |= fft_.forward(dst, calc_buffer_.data(), cepstrum_.data(), calc_buffer_.data());
                 
                 // liftering
-                err |= ipf::zero(cepstrum_.data() + lifter, size - lifter);
+                err |= ipf::zero(cepstrum_.data() + lifter, size - lifter + 1);
                 
                 if (inverse) err |= fft_.forward_inplace(cepstrum_.data(), calc_buffer_.data());
                 else         err |= fft_.inverse_inplace(cepstrum_.data(), calc_buffer_.data());

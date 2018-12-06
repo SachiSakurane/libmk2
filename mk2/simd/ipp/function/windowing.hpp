@@ -23,10 +23,11 @@ namespace function {
 #define MK2_IPP_WINDOWING_SIGNATURE (const Type* psrc, Type* pdst, int len)
 #define MK2_IPP_WINDOWING_ARGS (psrc, pdst, len)
 
-    MK2_IPP_REPLACE_TEMPLATE(win_bartlett, ippsWinBartlett, , MK2_IPP_WINDOWING_SIGNATURE, MK2_IPP_WINDOWING_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(win_blackman, ippsWinBlackman, , MK2_IPP_WINDOWING_SIGNATURE, MK2_IPP_WINDOWING_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(win_hamming,  ippsWinHamming,  , MK2_IPP_WINDOWING_SIGNATURE, MK2_IPP_WINDOWING_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(win_hann,     ippsWinHann,     , MK2_IPP_WINDOWING_SIGNATURE, MK2_IPP_WINDOWING_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_bartlett,     ippsWinBartlett,    , MK2_IPP_WINDOWING_SIGNATURE, MK2_IPP_WINDOWING_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_blackman_std, ippsWinBlackmanStd, , MK2_IPP_WINDOWING_SIGNATURE, MK2_IPP_WINDOWING_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_blackman_opt, ippsWinBlackmanOpt, , MK2_IPP_WINDOWING_SIGNATURE, MK2_IPP_WINDOWING_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_hamming,      ippsWinHamming,     , MK2_IPP_WINDOWING_SIGNATURE, MK2_IPP_WINDOWING_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_hann,         ippsWinHann,        , MK2_IPP_WINDOWING_SIGNATURE, MK2_IPP_WINDOWING_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
 
 #undef MK2_IPP_WINDOWING_SIGNATURE
 #undef MK2_IPP_WINDOWING_ARGS
@@ -35,16 +36,17 @@ namespace function {
 #define MK2_IPP_WINDOWING_I_SIGNATURE (Type* psec_dst, int len)
 #define MK2_IPP_WINDOWING_I_ARGS (psec_dst, len)
 
-    MK2_IPP_REPLACE_TEMPLATE(win_bartlett_inplace, ippsWinBartlett, _I, MK2_IPP_WINDOWING_I_SIGNATURE, MK2_IPP_WINDOWING_I_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(win_blackman_inplace, ippsWinBlackman, _I, MK2_IPP_WINDOWING_I_SIGNATURE, MK2_IPP_WINDOWING_I_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(win_hamming_inplace,  ippsWinHamming,  _I, MK2_IPP_WINDOWING_I_SIGNATURE, MK2_IPP_WINDOWING_I_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(win_hann_inplace,     ippsWinHann,     _I, MK2_IPP_WINDOWING_I_SIGNATURE, MK2_IPP_WINDOWING_I_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_bartlett_inplace,     ippsWinBartlett,    _I, MK2_IPP_WINDOWING_I_SIGNATURE, MK2_IPP_WINDOWING_I_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_blackman_std_inplace, ippsWinBlackmanStd, _I, MK2_IPP_WINDOWING_I_SIGNATURE, MK2_IPP_WINDOWING_I_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_blackman_opt_inplace, ippsWinBlackmanOpt, _I, MK2_IPP_WINDOWING_I_SIGNATURE, MK2_IPP_WINDOWING_I_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_hamming_inplace,      ippsWinHamming,     _I, MK2_IPP_WINDOWING_I_SIGNATURE, MK2_IPP_WINDOWING_I_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_hann_inplace,         ippsWinHann,        _I, MK2_IPP_WINDOWING_I_SIGNATURE, MK2_IPP_WINDOWING_I_ARGS, (Type), MK2_IPP_WINDOWING_ASSOCIATOR)
 
 #undef MK2_IPP_WINDOWING_I_SIGNATURE
 #undef MK2_IPP_WINDOWING_I_ARGS
 
 // kaiser
-#define MK2_IPP_WINDOWING_KAISER_ASSOCIATOR(base_struct, base_func, name, desc)                     \
+#define MK2_IPP_WINDOWING_WITH_ALPHA_ASSOCIATOR(base_struct, base_func, name, desc)                 \
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_16s, name, desc),  (Ipp16s, Ipp32f))    \
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_32f, name, desc),  (Ipp32f, Ipp32f))    \
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_64f, name, desc),  (Ipp64f, Ipp64f))    \
@@ -52,10 +54,13 @@ namespace function {
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_32fc, name, desc), (Ipp32fc, Ipp32f))   \
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_64fc, name, desc), (Ipp64fc, Ipp64f))
 
-    MK2_IPP_REPLACE_TEMPLATE(win_kaiser, ippsWinKaiser, , (const Type* psrc, Type* pdst, int len, AlphaType alpha), (psrc, pdst, len, alpha), (Type, AlphaType), MK2_IPP_WINDOWING_KAISER_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(win_kaiser_inplace, ippsWinKaiser, _I, (Type* psec_dst, int len, AlphaType alpha), (psec_dst, len, alpha), (Type, AlphaType), MK2_IPP_WINDOWING_KAISER_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_kaiser, ippsWinKaiser, , (const Type* psrc, Type* pdst, int len, AlphaType alpha), (psrc, pdst, len, alpha), (Type, AlphaType), MK2_IPP_WINDOWING_WITH_ALPHA_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_kaiser_inplace, ippsWinKaiser, _I, (Type* psec_dst, int len, AlphaType alpha), (psec_dst, len, alpha), (Type, AlphaType), MK2_IPP_WINDOWING_WITH_ALPHA_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_blackman, ippsWinBlackman, , (const Type* psrc, Type* pdst, int len, AlphaType alpha), (psrc, pdst, len, alpha), (Type, AlphaType), MK2_IPP_WINDOWING_WITH_ALPHA_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(win_blackman_inplace, ippsWinBlackman, _I, (Type* psec_dst, int len, AlphaType alpha), (psec_dst, len, alpha), (Type, AlphaType), MK2_IPP_WINDOWING_WITH_ALPHA_ASSOCIATOR)
+
 
 #undef MK2_IPP_WINDOWING_ASSOCIATOR
-#undef MK2_IPP_WINDOWING_KAISER_ASSOCIATOR
+#undef MK2_IPP_WINDOWING_WITH_ALPHA_ASSOCIATOR
 
 }}}}

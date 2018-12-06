@@ -18,6 +18,7 @@ namespace function {
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_64fc, name, desc), (Ipp64fc))
 
     MK2_IPP_REPLACE_TEMPLATE(sum, ippsSum, , (const Type* psrc, int len, Type* psum, IppHintAlgorithm hint), (psrc, len, psum, hint), (Type), MK2_IPP_STATISTICAL_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(mean, ippsMean, , (const Type* psrc, int len, Type* pmean, IppHintAlgorithm hint), (psrc, len, pmean, hint), (Type), MK2_IPP_STATISTICAL_ASSOCIATOR)
 
 #undef MK2_IPP_STATISTICAL_ASSOCIATOR
 
@@ -56,8 +57,8 @@ namespace function {
     
     MK2_IPP_REPLACE_TEMPLATE(max_every, ippsMaxEvery, , (const Type* psrc1, const Type* psrc2, Type* pdst, Ipp32u len), (psrc1, psrc2, pdst, len), (Type), MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR)
     MK2_IPP_REPLACE_TEMPLATE(min_every, ippsMinEvery, , (const Type* psrc1, const Type* psrc2, Type* pdst, Ipp32u len), (psrc1, psrc2, pdst, len), (Type), MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(max_every_inplace, ippsMaxEvery, _I, (const Type* psrc, Type* psrcdst, Ipp32u len), (psrc, psrcdst, len), (Type), MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(min_every_inplace, ippsMinEvery, _I, (const Type* psrc, Type* psrcdst, Ipp32u len), (psrc, psrcdst, len), (Type), MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(max_every_inplace, ippsMaxEvery, _I, (const Type* psrc, Type* psrcdst, int len), (psrc, psrcdst, len), (Type), MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(min_every_inplace, ippsMinEvery, _I, (const Type* psrc, Type* psrcdst, int len), (psrc, psrcdst, len), (Type), MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR)
 
 #undef MK2_IPP_STATISTICAL_MAX_MIN_EVERY_ASSOCIATOR    
     
