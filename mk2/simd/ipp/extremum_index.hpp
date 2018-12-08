@@ -41,7 +41,6 @@ namespace mk2 { namespace simd { namespace ipp {
             // differential
             function::sub(src + 1, src, dif_buf_.data(), size_ - 1);
             // ceiling
-            //wrapper::addc_inplace(static_cast<SrcType>(0.5), dif_buf_.data(), static_cast<int>(dif_buf_.size()));
             function::ceil(dif_buf_.data(), dif_buf_.data(), static_cast<int>(dif_buf_.size()));
             // to logical(with -v -> 0)
             function::convert_f2i(dif_buf_.data(), logical_buf_.data(), static_cast<int>(logical_buf_.size()));

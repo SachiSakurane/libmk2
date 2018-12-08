@@ -28,7 +28,7 @@ namespace mk2 { namespace simd { namespace ipp {
         
         ~true_envelope() = default;
         
-        IppStatus operator()(const Type* src_spec, Type* dst_env, Type threshold_db, int lifter, std::size_t max_iteration = 16)
+        IppStatus operator()(const Type* src_spec, Type* dst_env, Type threshold_db, int lifter, std::size_t max_iteration = 32)
         {
             namespace ipf = mk2::simd::ipp::function;
 
@@ -59,45 +59,14 @@ namespace mk2 { namespace simd { namespace ipp {
                 err |= ipf::zero(buffer_im_.data(), size);
                 err |= fft_.forward_inplace(buffer_.data(), buffer_im_.data());
                 err |= ipf::mulc_inplace(Type(1) / size, buffer_.data(), half);
-                err |= ipf::copy(buffer_.data() + 1, buffer_.data(), half);
+                if (i % 2 == 0)
+                    err |= ipf::copy(buffer_.data() + 1, buffer_.data(), half);
 
                 err |= ipf::sub(src_spec, buffer_.data(), dst_env, half);
                 err |= ipf::max(dst_env, half, &max_dif);
             }
 
             err |= ipf::copy(buffer_.data(), dst_env, half);
-
-            /*
-            if (max_iteration < 1)
-                return ipf::copy(src_spec, dst_env, half);
-
-
-            err |= ipf::copy(src_spec, buffer_.data(), half);
-
-            Type max_dif = std::numeric_limits<Type>::infinity();
-
-            // true spectrum iteration
-            for (std::size_t i = 1; i <= max_iteration && max_dif > threshold_db; ++i)
-            {
-                err |= ipf::zero(buffer_im_.data(), size);
-                err |= ipf::flip(buffer_.data(), buffer_.data() + half, half);
-
-                // ifft
-                err |= fft_.inverse_inplace(buffer_.data(), buffer_im_.data());
-
-                // liftering
-                err |= ipf::zero(buffer_.data() + lifter, size - lifter * 2);
-
-                // fft
-                err |= ipf::zero(buffer_im_.data(), size);
-                err |= fft_.forward_inplace(buffer_.data(), buffer_im_.data());
-                err |= ipf::mulc_inplace(Type(1) / size, buffer_.data(), half);
-
-                err |= ipf::max_every(buffer_.data(), src_spec, dst_env, half);
-
-                err |= ipf::sub_inplace(src_spec, buffer_.data(), half);
-                err |= ipf::max(buffer_.data(), half, &max_dif);
-            }*/
 
             return err;
         }
