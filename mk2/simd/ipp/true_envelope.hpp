@@ -53,7 +53,8 @@ namespace mk2 { namespace simd { namespace ipp {
                 err |= fft_.inverse_inplace(buffer_.data(), buffer_im_.data());
 
                 // liftering
-                err |= ipf::zero(buffer_.data() + lifter, size - lifter * 2);
+                if (size - lifter * 2 > 0)
+                    err |= ipf::zero(buffer_.data() + lifter, size - lifter * 2);
 
                 // fft
                 err |= ipf::zero(buffer_im_.data(), size);

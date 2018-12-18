@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <cfenv>
 #include <type_traits>
 
 #include <mk2/container/fixed_array.hpp>
@@ -34,18 +33,15 @@ namespace mk2 { namespace simd { namespace ipp {
         
         void operator()(const SrcType* src, IndexType *dst, extremum_type type = extremum_type::kExtremum)
         {
-            auto round_type = std::fegetround();
-            
-            fesetround(FE_TONEAREST);
-
             // differential
             function::sub(src + 1, src, dif_buf_.data(), size_ - 1);
             // ceiling
             function::ceil(dif_buf_.data(), dif_buf_.data(), static_cast<int>(dif_buf_.size()));
-            // to logical(with -v -> 0)
+            // threshold(+v -> 1)(-v -> 0)
+            function::threshold_gt_inplace(dif_buf_.data(), static_cast<int>(dif_buf_.size()), static_cast<SrcType>(1));
+            function::threshold_lt_inplace(dif_buf_.data(), static_cast<int>(dif_buf_.size()), static_cast<SrcType>(0));
+            // to logical
             function::convert_f2i(dif_buf_.data(), logical_buf_.data(), static_cast<int>(logical_buf_.size()));
-
-            std::fesetround(round_type);
 
             // extremum detection
             function::bit_xor(logical_buf_.data(), logical_buf_.data() + 1, dst + 1, size_ - 2);
@@ -57,11 +53,11 @@ namespace mk2 { namespace simd { namespace ipp {
                     break;
                 
                 case extremum_type::kMaximal:
-                    function::bit_and_inplace(logical_buf_.data(), dst + 1, static_cast<int>(logical_buf_.size()));
+                    function::bit_and_inplace(logical_buf_.data(), dst, static_cast<int>(logical_buf_.size()));
                     break;
                 
                 case extremum_type::kMinimal:
-                    function::bit_and_inplace(logical_buf_.data(), dst, static_cast<int>(logical_buf_.size()));
+                    function::bit_and_inplace(logical_buf_.data(), dst + 1, static_cast<int>(logical_buf_.size()));
                     break;
             }
         }

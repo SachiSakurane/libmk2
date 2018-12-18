@@ -46,7 +46,7 @@ namespace function {
     MK2_IPP_REPLACE_TEMPLATE(max, ippsMax, , (const Type* psrc, int len, Type* pdst), (psrc, len, pdst), (Type), MK2_IPP_STATISTICAL_MAX_MIN_ASSOCIATOR)
     MK2_IPP_REPLACE_TEMPLATE(min, ippsMin, , (const Type* psrc, int len, Type* pdst), (psrc, len, pdst), (Type), MK2_IPP_STATISTICAL_MAX_MIN_ASSOCIATOR)
     MK2_IPP_REPLACE_TEMPLATE(max_index, ippsMaxIndx, , (const Type* psrc, int len, Type* pmax, int* pindex), (psrc, len, pmax, pindex), (Type), MK2_IPP_STATISTICAL_MAX_MIN_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(min_index, ippsMinIndx, , (const Type* psrc, int len, Type* pmax, int* pindex), (psrc, len, pmax, pindex), (Type), MK2_IPP_STATISTICAL_MAX_MIN_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(min_index, ippsMinIndx, , (const Type* psrc, int len, Type* pmin, int* pindex), (psrc, len, pmin, pindex), (Type), MK2_IPP_STATISTICAL_MAX_MIN_ASSOCIATOR)
 
     MK2_IPP_REPLACE_TEMPLATE(max_abs, ippsMaxAbs, , (const Type* psrc, int len, Type* pmax_abs), (psrc, len, pmax_abs), (Type), MK2_IPP_STATISTICAL_MAX_MIN_ASSOCIATOR)
     MK2_IPP_REPLACE_TEMPLATE(min_abs, ippsMinAbs, , (const Type* psrc, int len, Type* pmin_abs), (psrc, len, pmin_abs), (Type), MK2_IPP_STATISTICAL_MAX_MIN_ASSOCIATOR)
