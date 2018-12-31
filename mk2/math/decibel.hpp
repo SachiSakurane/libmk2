@@ -21,7 +21,7 @@ namespace math {
     template<typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value>::type>
     inline constexpr T decibel_to_gain(T decibel)
     {
-        return mk2::math::pow (T(10.0), decibels * T(0.05));
+        return mk2::math::pow (T(10.0), decibel * T(0.05));
     }
 }
 }

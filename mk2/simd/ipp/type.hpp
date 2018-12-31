@@ -40,6 +40,11 @@ namespace mk2 { namespace simd { namespace ipp {
         template<> struct ipps_complex_impl<Ipp64f> { using type = Ipp64fc; };
         template<> struct ipps_complex_impl<Ipp32fc> { using type = Ipp32fc; };
         template<> struct ipps_complex_impl<Ipp64fc> { using type = Ipp64fc; };
+
+        template <class Type>
+        struct ipp_data_type{};
+
+
     }
     
     template<class Type>
@@ -53,4 +58,6 @@ namespace mk2 { namespace simd { namespace ipp {
     
     template<class Type>
     using ipps_complex = typename detail::ipps_complex_impl<Type>::type;
+
+
 }}}

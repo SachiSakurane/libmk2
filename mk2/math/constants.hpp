@@ -43,10 +43,9 @@ namespace mk2 { namespace math {
     constexpr static const _T root_two = static_cast<_T>(1.41421356237309504880168872420969808);
     
     template<class _T, typename = typename std::enable_if<std::is_floating_point<_T>::value>::type>
-    constexpr static const _T int_root_two = static_cast<_T>(1.0) / root_two<_T>;
-    
+    constexpr static const _T inv_root_two = static_cast<_T>(1.0) / root_two<_T>;
         
-        //ln
+    //ln
     template<class _T, typename = typename std::enable_if<std::is_floating_point<_T>::value>::type>
     constexpr static const _T ln_two = static_cast<_T>(0.693147180559945309429);
     
