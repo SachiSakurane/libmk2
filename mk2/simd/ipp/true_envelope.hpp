@@ -22,13 +22,13 @@ namespace mk2 { namespace simd { namespace ipp {
     class true_envelope
     {
     public:
-        true_envelope(int order) : 
+        explicit true_envelope(int order) :
             fft_(order), buffer_(static_cast<std::size_t>(1 << order)), buffer_im_(static_cast<std::size_t>(1 << order))
         {}
         
         ~true_envelope() = default;
         
-        IppStatus operator()(const Type* src_spec, Type* dst_env, Type threshold_db, int lifter, std::size_t max_iteration = 32)
+        IppStatus operator()(const Type* src_spec, Type* dst_env, Type threshold_db, int lifter, bool is_half = false, std::size_t max_iteration = 32)
         {
             namespace ipf = mk2::simd::ipp::function;
 
@@ -69,13 +69,16 @@ namespace mk2 { namespace simd { namespace ipp {
 
             err |= ipf::copy(buffer_.data(), dst_env, half);
 
+            if (!is_half)
+                ipf::flip(dst_env, dst_env + half, half);
+
             return err;
         }
         
     private:
+        mk2::simd::ipp::fft<Type> fft_;
         mk2::container::fixed_array<Type> buffer_;
         mk2::container::fixed_array<Type> buffer_im_;
-        mk2::simd::ipp::fft<Type> fft_;
         
     };
 
