@@ -144,15 +144,19 @@ namespace container{
 
         void destroy()
         {
-            allocator_traits::destroy(allocator_, elems_);
-            allocator_traits::deallocate(allocator_, elems_, size_);
+            if (size_)
+            {
+                allocator_traits::destroy(allocator_, elems_);
+                allocator_traits::deallocate(allocator_, elems_, size_);
+            }
+
             elems_ = nullptr;
         }
     };
 
     template<typename Type, typename Allocator>
     fixed_array<Type, Allocator>::fixed_array(size_t size, const Allocator &a)
-            : size_(size), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_))
+            : size_(size), allocator_(a), elems_(size_ > 0 ? allocator_traits::allocate(allocator_, size_) : nullptr)
     {
         Type *e = elems_;
         for (int i = 0; i < size_; ++i)
@@ -161,7 +165,7 @@ namespace container{
 
     template<typename Type, typename Allocator>
     fixed_array<Type, Allocator>::fixed_array(size_t size, const Type &value, const Allocator &a)
-            : size_(size), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_))
+            : size_(size), allocator_(a), elems_(size_ > 0 ? allocator_traits::allocate(allocator_, size_) : nullptr)
     {
         Type *e = elems_;
         for (size_t i = 0; i < size_; ++i)
@@ -177,7 +181,7 @@ namespace container{
     template<typename Type, typename Allocator>
     template<typename Tuple, size_t... Indices>
     fixed_array<Type, Allocator>::fixed_array(size_t size, Tuple&& tuple, const Allocator &a, std::index_sequence<Indices...>)
-            : size_(size), allocator_(a), elems_(allocator_traits::allocate(allocator_, size_))
+            : size_(size), allocator_(a), elems_(size_ > 0 ? allocator_traits::allocate(allocator_, size_) : nullptr)
     {
         Type *e = elems_;
         for (size_t i = 0; i < size_; ++i)
@@ -189,7 +193,7 @@ namespace container{
     fixed_array<Type, Allocator>::fixed_array(InputIter first, InputIter last, const Allocator &a)
             : size_((size_type)std::distance(first, last)),
               allocator_(a),
-              elems_(allocator_traits::allocate(allocator_, size_))
+              elems_(size_ > 0 ? allocator_traits::allocate(allocator_, size_) : nullptr)
     {
         for (Type *e = elems_; first != last; ++first)
             allocator_traits::construct(allocator_, e++, *first);

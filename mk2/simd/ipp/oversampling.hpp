@@ -5,9 +5,11 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include <mk2/container/fixed_array.hpp>
 #include <mk2/math/constants.hpp>
+#include <mk2/simd/ipp/function/arithmetic.hpp>
 #include <mk2/simd/ipp/function/sampling.hpp>
 #include <mk2/simd/ipp/bi_quad_filter.hpp>
 
@@ -38,6 +40,12 @@ namespace mk2 { namespace simd { namespace ipp{
         {
             namespace ipf = mk2::simd::ipp::function;
 
+            if (factor_ == 1)
+            {
+                ipf::copy(src, dst, len);
+                return;
+            }
+
             ipf::copy(src, buffer0_.data(), len);
 
             for (int i = 0; i < factor_order_; ++i)
@@ -50,6 +58,7 @@ namespace mk2 { namespace simd { namespace ipp{
                 filter_[i]->operator()(buffer0_.data(), buffer0_.data(), dst_len);
             }
 
+            ipf::mulc_inplace(static_cast<float>(factor_), buffer0_.data(), len * factor_);
             ipf::copy(buffer0_.data(), dst, len * factor_);
         }
 
@@ -57,7 +66,7 @@ namespace mk2 { namespace simd { namespace ipp{
         const int max_sample_, factor_order_, factor_;
         float sample_rate_;
         mk2::container::fixed_array<Type> buffer0_;
-        mk2::container::fixed_array<std::unique_ptr<mk2::simd::ipp::bi_quad_filter<Type>>> filter_;
+        std::vector<std::unique_ptr<mk2::simd::ipp::bi_quad_filter<Type>>> filter_;
 
     };
 
