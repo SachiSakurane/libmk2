@@ -59,8 +59,48 @@ namespace function {
     MK2_IPP_REPLACE_TEMPLATE(win_blackman, ippsWinBlackman, , (const Type* psrc, Type* pdst, int len, AlphaType alpha), (psrc, pdst, len, alpha), (Type, AlphaType), MK2_IPP_WINDOWING_WITH_ALPHA_ASSOCIATOR)
     MK2_IPP_REPLACE_TEMPLATE(win_blackman_inplace, ippsWinBlackman, _I, (Type* psec_dst, int len, AlphaType alpha), (psec_dst, len, alpha), (Type, AlphaType), MK2_IPP_WINDOWING_WITH_ALPHA_ASSOCIATOR)
 
-
 #undef MK2_IPP_WINDOWING_ASSOCIATOR
 #undef MK2_IPP_WINDOWING_WITH_ALPHA_ASSOCIATOR
+
+    enum class window_type
+    {
+        kBartlett,
+        kBlackmanStd,
+        kBlackmanOpt,
+        kHamming,
+        kHann,
+        kKaiser,
+        kBlackman,
+    };
+
+    template<class Type>
+    void windowing(window_type type, const Type* src, Type* dst, int len, Type alpha)
+    {
+        switch(type)
+        {
+            case window_type::kBartlett:    mk2::simd::ipp::function::win_bartlett(src, dst, len);        break;
+            case window_type::kBlackman:    mk2::simd::ipp::function::win_blackman(src, dst, len, alpha); break;
+            case window_type::kBlackmanOpt: mk2::simd::ipp::function::win_blackman_opt(src, dst, len);    break;
+            case window_type::kBlackmanStd: mk2::simd::ipp::function::win_blackman_std(src, dst, len);    break;
+            case window_type::kHamming:     mk2::simd::ipp::function::win_hamming(src, dst, len);         break;
+            case window_type::kHann:        mk2::simd::ipp::function::win_hann(src, dst, len);            break;
+            case window_type::kKaiser:      mk2::simd::ipp::function::win_kaiser(src, dst, len, alpha);   break;
+        }
+    }
+
+    template<class Type>
+    void windowing_inplace(window_type type, Type* src_dst, int len, Type alpha)
+    {
+        switch(type)
+        {
+            case window_type::kBartlett:    mk2::simd::ipp::function::win_bartlett_inplace(src_dst, len);        break;
+            case window_type::kBlackman:    mk2::simd::ipp::function::win_blackman_inplace(src_dst, len, alpha); break;
+            case window_type::kBlackmanOpt: mk2::simd::ipp::function::win_blackman_opt_inplace(src_dst, len);    break;
+            case window_type::kBlackmanStd: mk2::simd::ipp::function::win_blackman_std_inplace(src_dst, len);    break;
+            case window_type::kHamming:     mk2::simd::ipp::function::win_hamming_inplace(src_dst, len);         break;
+            case window_type::kHann:        mk2::simd::ipp::function::win_hann_inplace(src_dst, len);            break;
+            case window_type::kKaiser:      mk2::simd::ipp::function::win_kaiser_inplace(src_dst, len, alpha);   break;
+        }
+    }
 
 }}}}
