@@ -18,13 +18,13 @@ namespace mk2 { namespace simd { namespace ipp {
         using spec_type = mk2::simd::ipp::ipps_fft_spec_c<Type>;
         
     public:
-        fft(int order) : order_(order), fft_spec_(0)
+        fft(int order) : order_(order), fft_spec_(nullptr)
         {
             int size_fft_spec, size_fft_init_buf, size_fft_work_buf;
 
             mk2::simd::ipp::function::fft_get_size<spec_type>
                 (order_, IPP_FFT_NODIV_BY_ANY, &size_fft_spec, &size_fft_init_buf, &size_fft_work_buf);
-    
+
             ptr_type pfft_init_buf;
             pfft_spec_buf_ = ptr_type(ippsMalloc_8u(size_fft_spec));
             pfft_init_buf  = ptr_type(ippsMalloc_8u(size_fft_init_buf));

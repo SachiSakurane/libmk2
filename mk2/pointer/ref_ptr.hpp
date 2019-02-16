@@ -23,10 +23,10 @@ namespace pointer{
         ref_ptr(std::nullptr_t) : elem_(nullptr) {}
 
         template<typename Type2>
-        ref_ptr(const ref_ptr<Type2>& obj) : elem_(obj.elem_) {}
+        ref_ptr(const ref_ptr<Type2>& obj) : elem_(obj.get()) {}
 
         template<typename Type2>
-        ref_ptr(ref_ptr<Type2>&& obj) : elem_(obj.elem_)
+        ref_ptr(ref_ptr<Type2>&& obj) : elem_(obj.get())
         {
             obj.elem_ = nullptr;
         }
@@ -101,6 +101,12 @@ namespace pointer{
     };
 
     template<class T, class U>
+    bool operator==(const ref_ptr<T>& lhv, const ref_ptr<U>& rhv)
+    {
+        return lhv.get() == rhv.get();
+    }
+
+    template<class T, class U>
     bool operator==(const ref_ptr<T>& lhv, const U& rhv)
     {
         return lhv.get() == rhv.get();
@@ -122,6 +128,18 @@ namespace pointer{
     bool operator==(const T* lhv, const ref_ptr<U>& rhv)
     {
         return lhv == rhv.get();
+    }
+
+    template<class T, class U>
+    bool operator==(T* lhv, const ref_ptr<U>& rhv)
+    {
+        return lhv == rhv.get();
+    }
+
+    template<class T, class U>
+    bool operator==(const ref_ptr<T>& lhv, U* rhv)
+    {
+        return lhv.get() == rhv;
     }
 
     template<class T, class U>

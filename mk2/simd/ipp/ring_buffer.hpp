@@ -44,9 +44,15 @@ namespace mk2 { namespace simd { namespace ipp
                 function::copy(sample, data + index_, static_cast<int>(len));
                 index_ += len;
             }
-            else if(len + index_ == size_)
+            else if (len + index_ == size_)
             {
                 function::copy(sample, data + index_, static_cast<int>(len));
+                index_ = 0;
+            }
+            else if (len > size_)
+            {
+                auto pos = len - size_;
+                function::copy(sample + pos, data, static_cast<int>(size_));
                 index_ = 0;
             }
             else
