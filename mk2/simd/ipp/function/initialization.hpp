@@ -12,7 +12,7 @@ namespace mk2 { namespace simd { namespace ipp {
 namespace function {
 
 #define MK2_IPP_INITIALIZATION_ASSOCIATOR(base_struct, base_func, name, desc)               \
-    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_8s, name, desc),   (Ipp8s))     \
+    MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_8u, name, desc),   (Ipp8u))     \
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_16s, name, desc),  (Ipp16s))    \
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_32s, name, desc),  (Ipp32s))    \
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_64s, name, desc),  (Ipp64s))    \

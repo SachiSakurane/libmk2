@@ -10,7 +10,7 @@
 
 namespace mk2 { namespace simd { namespace ipp {
 
-    template <class T, class = typename std::enable_if<std::is_same<Ipp8u, T>::value>::type>
+    template <class T>
     struct ipp_buffer_delete
     {
         void operator()(T* ptr) 

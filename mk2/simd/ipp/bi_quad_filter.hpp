@@ -6,9 +6,11 @@
 
 #include <array>
 #include <cmath>
+#include <memory>
 
 #include <mk2/container/fixed_array.hpp>
 #include <mk2/math/constants.hpp>
+#include <mk2/simd/ipp/ipp_buffer_delete.hpp>
 #include <mk2/simd/ipp/type.hpp>
 #include <mk2/simd/ipp/function/filtering.hpp>
 #include <mk2/simd/ipp/function/initialization.hpp>
@@ -156,10 +158,10 @@ namespace mk2 { namespace simd { namespace ipp {
                 const Type alpha = sinw * std::sinh(std::log(static_cast<Type>(2)) / 2 * bw * omega / sinw);
 
                 dst[0] = 1;
-                dst[1] = dst[1];
+                dst[1] = - 2 * cosw;
                 dst[2] = 1;
                 dst[3] = 1 + alpha;
-                dst[4] = - 2 * cosw;
+                dst[4] = dst[1];
                 dst[5] = 1 - alpha;
             };
         }
@@ -188,27 +190,24 @@ namespace mk2 { namespace simd { namespace ipp {
     template<class Type, int BiQuadOrder = 1>
     class bi_quad_filter
     {
+        using ptr_type = std::unique_ptr<Ipp8u, mk2::simd::ipp::ipp_buffer_delete<Ipp8u>>;
         using state_type = mk2::simd::ipp::ipps_iir_state<Type>;
         
     public:
-        bi_quad_filter(Type sample_rate) : bi_quad_filter(sample_rate,
-                bi_quad_coefficients::all_pass<Type>(static_cast<Type>(sample_rate / 2.f), mk2::math::inv_root_two<Type>)) {}
+        explicit bi_quad_filter(Type sample_rate) : bi_quad_filter(sample_rate,
+                bi_quad_coefficients::all_pass<Type>(static_cast<Type>(sample_rate / 2.f), mk2::math::inv_root_two<Type>))
+        {}
 
         template <class Filter>
         bi_quad_filter(Type sample_rate, Filter&& f) : sample_rate_(sample_rate)
         {
+            std::forward<Filter>(f)(sample_rate_, coefficients_.data());
+
             int buf_size;
             function::iir_get_state_size_bi_quad<Type>(BiQuadOrder, &buf_size);
-            buffer_ = ippsMalloc_8u(buf_size);
-            std::forward<Filter>(f)(sample_rate_, coefficients_.data());
-            function::iir_init_bi_quad(&state, coefficients_.data(), BiQuadOrder, static_cast<const Type*>(nullptr), buffer_);
+            buffer_ = ptr_type(ippsMalloc_8u(buf_size));
 
-        }
-
-        ~bi_quad_filter()
-        {
-            if (buffer_)
-                ippsFree(buffer_);
+            function::iir_init_bi_quad(&state_, coefficients_.data(), BiQuadOrder, static_cast<const Type*>(nullptr), buffer_.get());
         }
         
         void set_coefficients(const float* cofs)
@@ -218,18 +217,18 @@ namespace mk2 { namespace simd { namespace ipp {
     
         void operator()(const Type* src, Type* dst, int len)
         {
-            function::iir(src, dst, len, state);
+            function::iir(src, dst, len, state_);
         }
     
         void inplace(Type* src_dst, int len)
         {
-            function::iir_inplace(src_dst, len, state);
+            function::iir_inplace(src_dst, len, state_);
         }
         
     private:
         const Type sample_rate_;
-        Ipp8u *buffer_;
-        state_type *state;
+        ptr_type buffer_;
+        state_type *state_;
         std::array<Type, BiQuadOrder * 6> coefficients_;
         std::array<Type, BiQuadOrder * 2> delay_;
     };
