@@ -1,5 +1,5 @@
 //
-// Created by Himatya on 2017/12/04.
+// Created by SachiSakurane on 2019-03-27.
 //
 
 #pragma once
@@ -14,5 +14,6 @@
 #include <mk2/iterator/select_iterator.hpp>
 #include <mk2/iterator/size.hpp>
 #include <mk2/iterator/tuple_iterator.hpp>
+#include <mk2/iterator/type_traits.hpp>
 #include <mk2/iterator/value_transform_iterator.hpp>
 

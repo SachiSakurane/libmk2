@@ -4,5 +4,4 @@
 
 #pragma once
 
-#include <mk2/pointer/ref_ptr.hpp>
 

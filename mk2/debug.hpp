@@ -1,11 +1,9 @@
 //
-// Created by Himatya on 2018/02/07.
+// Created by SachiSakurane on 2019-03-27.
 //
 
-#ifndef LIBMK2_DEBUG_HPP
-#define LIBMK2_DEBUG_HPP
+#pragma once
 
 #include <mk2/debug/build_type.hpp>
 #include <mk2/debug/debug_log.hpp>
 
-#endif /* debug_h */

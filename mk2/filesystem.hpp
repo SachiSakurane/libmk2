@@ -1,10 +1,10 @@
 //
-// Created by Himatya on 2018/04/26.
+// Created by SachiSakurane on 2019-03-27.
 //
 
-#ifndef LIBMK2_FILESYSTEM_HPP
-#define LIBMK2_FILESYSTEM_HPP
+#pragma once
 
+#include <mk2/filesystem/config.hpp>
 #include <mk2/filesystem/glob.hpp>
+#include <mk2/filesystem/path.hpp>
 
-#endif //LIBMK2_FILESYSTEM_HPP
