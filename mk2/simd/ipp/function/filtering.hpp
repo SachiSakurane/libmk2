@@ -48,8 +48,8 @@ namespace function {
     MK2_PP_REPLACE_TO_TEMPLATE_FUNC(base_struct, base_func(_64fc, name, desc), (IppsFIRSpec_64fc, Ipp64fc))
 
     // SR
-    MK2_IPP_REPLACE_TEMPLATE(fir_sr_init, ippsFIRSRInit, , (const Type* ptaps, int taps_len, IppAlgType alg_type, IppsFIRSpec* pspec), (ptaps, taps_len, alg_type, pspec), (Type, IppsFIRSpec), MK2_IPP_FIR_FILTERING_ASSOCIATOR)
-    MK2_IPP_REPLACE_TEMPLATE(fir_sr, ippsFIRSR, , (const Type* psrc, Type* pdst, int num_iters, IppsFIRSpec* pspec, const Type* pdly_src, Type* pdly_dst, Ipp8u* pbuf), (psrc, pdst, num_iters, pspec, pdly_src, pdly_dst, pbuf), (Type, IppsFIRSpec), MK2_IPP_FIR_FILTERING_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(fir_sr_init, ippsFIRSRInit, , (const Type* ptaps, int taps_len, IppAlgType alg_type, IppsFIRSpec* pspec), (ptaps, taps_len, alg_type, pspec), (IppsFIRSpec, Type), MK2_IPP_FIR_FILTERING_ASSOCIATOR)
+    MK2_IPP_REPLACE_TEMPLATE(fir_sr, ippsFIRSR, , (const Type* psrc, Type* pdst, int num_iters, IppsFIRSpec* pspec, const Type* pdly_src, Type* pdly_dst, Ipp8u* pbuf), (psrc, pdst, num_iters, pspec, pdly_src, pdly_dst, pbuf), (IppsFIRSpec, Type), MK2_IPP_FIR_FILTERING_ASSOCIATOR)
 
 
 #undef MK2_IPP_FIR_FILTERING_ASSOCIATOR
