@@ -19,7 +19,7 @@ namespace mk2 {
 namespace container{
 
     struct tuple_construct_t{};
-    constexpr tuple_construct_t tuple_construct = tuple_construct_t();
+    static constexpr tuple_construct_t tuple_construct = tuple_construct_t();
 
     template<typename Type, typename Allocator = std::allocator<Type>>
     class fixed_array {
