@@ -21,6 +21,6 @@ namespace math{
     inline constexpr T normalized_sync(T x)
     {
         const auto pi_x = x * mk2::math::pi<T>;
-        return x == 0 ? 1 : sin(pi_x) / pi_x;
+        return x == 0 ? 1 : mk2::math::sin(pi_x) / pi_x;
     }
 }}
