@@ -16,14 +16,22 @@
 
 namespace mk2{
 namespace easing{
-    template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
-    inline constexpr T elastic(T normalized_time){
-        if ( normalized_time == 0 ) return 0;
-        if ( normalized_time == 1 ) return 1;
-        T mrvs_time = normalized_time - 1;
-        T post_fix = mk2::math::pow( 2.0, 10.0 * mrvs_time);
-        return - (post_fix * mk2::math::sin((mrvs_time - 0.075) * mk2::math::two_pi<T> * 3.33333333));
-    }
+
+    struct elastic_t
+    {
+        template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
+        constexpr T operator()(T normalized_time)
+        {
+            if ( normalized_time == 0 ) return 0;
+            if ( normalized_time == 1 ) return 1;
+            T mrvs_time = normalized_time - 1;
+            T post_fix = mk2::math::pow( 2.0, 10.0 * mrvs_time);
+            return - (post_fix * mk2::math::sin((mrvs_time - 0.075) * mk2::math::two_pi<T> * 3.33333333));
+        }
+    };
+
+    static constexpr elastic_t elastic = elastic_t{};
+
 }
 }
 

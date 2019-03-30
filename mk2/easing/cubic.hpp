@@ -12,10 +12,18 @@
 
 namespace mk2{
 namespace easing{
-    template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
-    inline constexpr T cubic(T normalized_time){
-        return normalized_time * normalized_time * normalized_time;
-    }
+
+    struct cubic_t
+    {
+        template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
+        constexpr T operator()(T normalized_time)
+        {
+            return normalized_time * normalized_time * normalized_time;
+        }
+    };
+
+    static constexpr cubic_t cubic = cubic_t{};
+
 }
 }
 

@@ -12,9 +12,17 @@
 
 namespace mk2{
 namespace easing{
-    template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
-    inline constexpr T quint(T normalized_time){
-        return normalized_time * normalized_time * normalized_time * normalized_time * normalized_time;
-    }
+
+    struct quint_t
+    {
+        template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
+        constexpr T operator()(T normalized_time)
+        {
+            return normalized_time * normalized_time * normalized_time * normalized_time * normalized_time;
+        }
+    };
+
+    static constexpr quint_t quint = quint_t{};
+
 }
 }
