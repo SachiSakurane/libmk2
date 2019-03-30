@@ -13,7 +13,7 @@
 namespace mk2{
 namespace easing{
 
-    struct quadratic_t
+    struct quadratic
     {
         template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
         constexpr T operator()(T normalized_time)
@@ -21,8 +21,6 @@ namespace easing{
             return normalized_time * normalized_time;
         }
     };
-
-    static constexpr quadratic_t quadratic = quadratic_t{};
 
 }
 }

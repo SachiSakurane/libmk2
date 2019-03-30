@@ -14,7 +14,7 @@
 namespace mk2{
 namespace easing{
 
-    struct circular_t
+    struct circular
     {
         template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
         constexpr T operator()(T normalized_time)
@@ -22,8 +22,6 @@ namespace easing{
             return static_cast<T>(1) - mk2::math::sqrt(static_cast<T>(1) - normalized_time * normalized_time);
         }
     };
-
-    static constexpr circular_t circular = circular_t{};
 
 }
 }

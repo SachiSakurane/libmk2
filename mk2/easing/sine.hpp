@@ -16,7 +16,7 @@
 namespace mk2{
 namespace easing{
 
-    struct sine_t
+    struct sine
     {
         template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
         constexpr T operator()(T normalized_time)
@@ -24,8 +24,6 @@ namespace easing{
             return 1.0 - mk2::math::cos(mk2::math::half_pi<T> * normalized_time);
         }
     };
-
-    static constexpr sine_t sine = sine_t{};
 
 }
 }

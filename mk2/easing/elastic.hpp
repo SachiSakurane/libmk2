@@ -17,7 +17,7 @@
 namespace mk2{
 namespace easing{
 
-    struct elastic_t
+    struct elastic
     {
         template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
         constexpr T operator()(T normalized_time)
@@ -29,8 +29,6 @@ namespace easing{
             return - (post_fix * mk2::math::sin((mrvs_time - 0.075) * mk2::math::two_pi<T> * 3.33333333));
         }
     };
-
-    static constexpr elastic_t elastic = elastic_t{};
 
 }
 }

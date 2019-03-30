@@ -15,7 +15,7 @@
 namespace mk2{
 namespace easing{
 
-    struct exponential_t
+    struct exponential
     {
         template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
         constexpr T operator()(T normalized_time)
@@ -23,8 +23,6 @@ namespace easing{
             return mk2::math::pow(static_cast<T>(2), static_cast<T>(10.0 * (normalized_time - 1.0)));
         }
     };
-
-    static constexpr exponential_t exponential = exponential_t{};
 
 }
 }

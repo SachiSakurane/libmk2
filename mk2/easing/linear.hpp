@@ -13,7 +13,7 @@
 namespace mk2{
 namespace easing{
 
-    struct linear_t
+    struct linear
     {
         template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
         constexpr T operator()(T normalized_time)
@@ -21,8 +21,6 @@ namespace easing{
             return normalized_time;
         }
     };
-
-    static constexpr linear_t linear = linear_t{};
 
 }
 }

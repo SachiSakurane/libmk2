@@ -20,7 +20,7 @@ namespace math{
     namespace detail{
         template<class T>
         inline constexpr T exp_impl1(T x, T powval,  std::size_t n, std::size_t last){
-            return powval * math::inverse_factorial<T>(n) + (n == last ? static_cast<T>(0.0) : exp_impl(x, powval * x, n + 1, last));
+            return powval * mk2::math::inverse_factorial<T>(n) + (n == last ? static_cast<T>(0.0) : exp_impl1(x, powval * x, n + 1, last));
         }
 
         template<class T>

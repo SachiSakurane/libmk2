@@ -13,7 +13,7 @@
 namespace mk2{
 namespace easing{
 
-    struct bounce_t
+    struct bounce
     {
         template<typename T, typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
         constexpr T operator()(T normalized_time)
@@ -35,8 +35,6 @@ namespace easing{
             return -7.5625 * rvs_time * post_fix + 0.015625;
         }
     };
-
-    static constexpr bounce_t bounce = bounce_t{};
 
 }
 }
