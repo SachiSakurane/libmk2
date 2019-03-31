@@ -15,9 +15,9 @@
 namespace mk2{
 namespace math{
     template<class Type, class FloatType, typename = typename std::enable_if<std::is_floating_point<FloatType>::value>::type>
-    inline constexpr Type lerp(Type p1, Type p2, FloatType x)
+    inline constexpr Type lerp(Type a, Type b, FloatType x)
     {
-        return static_cast<Type>(p1 * x + p2 * (1 - x));
+        return static_cast<Type>(a * (1 - x) + b * x);
     }
     
     template<
