@@ -14,10 +14,10 @@
 
 namespace mk2{
 namespace math{
-    template<class _T, typename = typename std::enable_if<std::is_floating_point<_T>::value>::type>
-    inline constexpr _T lerp(_T p1, _T p2, _T x)
+    template<class Type, class FloatType, typename = typename std::enable_if<std::is_floating_point<FloatType>::value>::type>
+    inline constexpr Type lerp(Type p1, Type p2, FloatType x)
     {
-        return p1 * x + p2 * (static_cast<_T>(1)-x);
+        return static_cast<Type>(p1 * x + p2 * (1 - x));
     }
     
     template<
