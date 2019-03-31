@@ -17,11 +17,10 @@ namespace thread{
     class basic_scoped_thread : mk2::utility::noncopyable<basic_scoped_thread<Thread>>
     {
     public:
-        basic_scoped_thread()
-        {}
-        
+        basic_scoped_thread() = default;
+
         template<class F, class... Args>
-        basic_scoped_thread(F&& f, Args&&... args) : thread_(std::forward<F>(f), std::forward<Args>(args)...)
+        explicit basic_scoped_thread(F&& f, Args&&... args) : thread_(std::forward<F>(f), std::forward<Args>(args)...)
         {}
 
         basic_scoped_thread(basic_scoped_thread&& obj) noexcept
