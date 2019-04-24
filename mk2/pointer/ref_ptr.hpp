@@ -28,7 +28,7 @@ namespace pointer{
         template<typename Type2>
         ref_ptr(ref_ptr<Type2>&& obj) : elem_(obj.get())
         {
-            obj.elem_ = nullptr;
+            obj.reset();
         }
 
         template<typename Type2>
@@ -86,7 +86,7 @@ namespace pointer{
             return elem_ != nullptr;
         }
 
-        void reset(pointer p = pointer())
+        void reset(pointer p = nullptr)
         {
             elem_ = p;
         }
@@ -177,6 +177,7 @@ namespace pointer{
     {
         return ref_ptr<typename std::pointer_traits<SmartPointer>::element_type>(p.get());
     }
+
 }
 }
 
