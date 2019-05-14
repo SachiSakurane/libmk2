@@ -36,11 +36,14 @@ namespace math{
             typedef int64_t type;
         };
 
+#if defined(_MSC_VER)
+#elif
         template<>
         struct sqrt_union_int<long double>
         {
             typedef __int128_t type;
         };
+#endif
 
         template<typename FloatType>
         using sqrt_union_int_t = typename sqrt_union_int<FloatType>::type;
@@ -56,20 +59,26 @@ namespace math{
         template<>
         inline constexpr float babylonian_sqrt_impl<float>(sqrt_union_int_t<float> v)
         {
-            return ((int32_t)1 << 29) + (v >> 1) - ((int32_t)1 << 22);
+            using type = decltype(v);
+            return ((type)1 << 29) + (v >> 1) - ((type)1 << 22);
         }
 
         template<>
         inline constexpr double babylonian_sqrt_impl<double>(sqrt_union_int_t<double> v)
         {
-            return ((int64_t)1 << 61) + (v >> 1) - ((int64_t)1 << 51);
+            using type = decltype(v);
+            return ((type)1 << 61) + (v >> 1) - ((type)1 << 51);
         }
 
+#if defined(_MSC_VER)
+#elif
         template<>
         inline constexpr long double babylonian_sqrt_impl<long double>(sqrt_union_int_t<long double> v)
         {
-            return ((__int128_t)1 << 125) + (v >> 1) - ((__int128_t)1 << 111);
+            using type = decltype(v);
+            return ((type)1 << 125) + (v >> 1) - ((type)1 << 111);
         }
+#endif
 
         //http://forums.techarena.in/software-development/1290144.htm
         template<typename _T>
