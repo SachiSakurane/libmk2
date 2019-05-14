@@ -37,7 +37,7 @@ namespace math{
         };
 
 #if defined(_MSC_VER)
-#elif
+#else
         template<>
         struct sqrt_union_int<long double>
         {
@@ -71,7 +71,7 @@ namespace math{
         }
 
 #if defined(_MSC_VER)
-#elif
+#else
         template<>
         inline constexpr long double babylonian_sqrt_impl<long double>(sqrt_union_int_t<long double> v)
         {
