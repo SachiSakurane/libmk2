@@ -4,8 +4,7 @@
 
 #pragma once
 
-#include <ipp.h>
-
+#include <mk2/simd/ipp/include.hpp>
 #include <mk2/simd/ipp/function/float_precision.hpp>
 #include <mk2/simd/ipp/function/macro.hpp>
 
