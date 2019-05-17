@@ -7,7 +7,7 @@
 #include <boost/preprocessor.hpp>
 #include <mk2/preprocessor/template_wrapper.hpp>
 
-#define MK2_IPP_NAME_FUNC(dif, base, descriptor) base##dif##descriptor
+#define MK2_IPP_NAME_FUNC(dif, base, descriptor) BOOST_PP_CAT(base, BOOST_PP_CAT(dif, descriptor))
 
 #define MK2_IPP_REPLACE_TEMPLATE(name, base_name, descriptor, signature, args, template_name, associator)   \
 MK2_IPP_REPLACE_TEMPLATE_REDUNDANCY(name, base_name, descriptor, signature, args, template_name, template_name, associator)

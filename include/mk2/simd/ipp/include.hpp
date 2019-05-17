@@ -28,4 +28,5 @@
 #   endif
 #endif
 
+#include <ipp.h>
 #include <ipps.h>
