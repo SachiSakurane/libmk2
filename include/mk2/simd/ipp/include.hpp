@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <ipps.h>
-
 #ifdef _MSC_VER
 #   if defined(__SSE3__) && __has_include(<ipp_m7.h>)
 #       include <ipp_m7.h>
@@ -29,3 +27,5 @@
 #       include <ipp_k0.h>
 #   endif
 #endif
+
+#include <ipps.h>
