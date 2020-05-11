@@ -19,6 +19,22 @@ namespace math{
     {
         return static_cast<Type>(a * (1 - x) + b * x);
     }
+
+    template<
+        class ContainerType,
+        class FloatType,
+        typename = typename std::enable_if<std::is_floating_point<FloatType>::value>::type
+    >
+    inline constexpr ContainerType lerp(const ContainerType* ptr, size_t size, FloatType v)
+    {
+        v = mk2::algorithm::clamp(v, FloatType(0.0), FloatType(1.0));
+        if(v == FloatType(1.0))
+            return ptr[size - 1];
+        v *= size - 1;
+        size_t v_pos = (size_t)v;
+        FloatType lerp = v - v_pos;
+        return mk2::math::lerp(ptr[v_pos], ptr[v_pos + 1], lerp);
+    }
     
     template<
         class Container,
