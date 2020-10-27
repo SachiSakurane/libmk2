@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <mk2/rx/dispose_bag.hpp>
 #include <mk2/utility/noncopyable.hpp>
 
 namespace mk2 {
